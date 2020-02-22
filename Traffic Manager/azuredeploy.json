@@ -2,6 +2,13 @@
     "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
+        "vmSize": {
+            "type": "string",
+            "defaultValue": "Standard_B1s",
+            "metadata": {
+                "description": "Size of the virtual machine."
+            }
+        },
         "adminUsername": {
             "type": "string",
             "metadata": {
@@ -34,13 +41,6 @@
             ],
             "metadata": {
                 "description": "The Windows version for the VM. This will pick a fully patched image of this given Windows version."
-            }
-        },
-        "vmSize": {
-            "type": "string",
-            "defaultValue": "Standard_B1s",
-            "metadata": {
-                "description": "Size of the virtual machine."
             }
         },
         "location": {
@@ -120,7 +120,7 @@
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                   "uri": "[variables('serverTemplateURI')]"
+                    "uri": "[variables('serverTemplateURI')]"
                 },
                 "parameters": {
                     "username": {
