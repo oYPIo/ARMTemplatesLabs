@@ -2,6 +2,13 @@
     "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
+        "vmSize": {
+            "type": "string",
+            "defaultValue": "Standard_B1s",
+            "metadata": {
+                "description": "Size of the virtual machine."
+            }
+        },
         "username": {
             "type": "string",
             "defaultValue": "azureuser"
@@ -64,7 +71,8 @@
                     }
                 ]
             },
-            "dependsOn": []
+            "dependsOn": [
+            ]
         },
         {
             "type": "Microsoft.Network/networkSecurityGroups",
@@ -88,7 +96,8 @@
                     }
                 ]
             },
-            "dependsOn": []
+            "dependsOn": [
+            ]
         },
         {
             "type": "Microsoft.Network/virtualNetworks",
@@ -110,7 +119,8 @@
                     }
                 ]
             },
-            "dependsOn": []
+            "dependsOn": [
+            ]
         },
         {
             "type": "Microsoft.Network/virtualNetworks",
@@ -132,7 +142,8 @@
                     }
                 ]
             },
-            "dependsOn": []
+            "dependsOn": [
+            ]
         },
         {
             "type": "Microsoft.Network/publicIPAddresses",
@@ -150,7 +161,8 @@
                     "domainNameLabel": "[variables('eastasiaVMDNSName')]"
                 }
             },
-            "dependsOn": []
+            "dependsOn": [
+            ]
         },
         {
             "type": "Microsoft.Network/publicIPAddresses",
@@ -164,11 +176,12 @@
             "properties": {
                 "publicIPAddressVersion": "IPv4",
                 "publicIPAllocationMethod": "Static",
-                "dnsSettings":{
+                "dnsSettings": {
                     "domainNameLabel": "[variables('westus2VMDNSName')]"
                 }
             },
-            "dependsOn": []
+            "dependsOn": [
+            ]
         },
         {
             "type": "Microsoft.Network/networkInterfaces",
@@ -270,7 +283,8 @@
                         },
                         "diskSizeGB": 30
                     },
-                    "dataDisks": []
+                    "dataDisks": [
+                    ]
                 },
                 "osProfile": {
                     "computerName": "[variables('eastasiaVMName')]",
@@ -280,7 +294,8 @@
                         "disablePasswordAuthentication": false,
                         "provisionVMAgent": true
                     },
-                    "secrets": [],
+                    "secrets": [
+                    ],
                     "allowExtensionOperations": true
                 },
                 "networkProfile": {
@@ -352,7 +367,8 @@
                         },
                         "diskSizeGB": 30
                     },
-                    "dataDisks": []
+                    "dataDisks": [
+                    ]
                 },
                 "osProfile": {
                     "computerName": "[variables('westus2VMName')]",
@@ -362,7 +378,8 @@
                         "disablePasswordAuthentication": false,
                         "provisionVMAgent": true
                     },
-                    "secrets": [],
+                    "secrets": [
+                    ],
                     "allowExtensionOperations": true
                 },
                 "networkProfile": {
