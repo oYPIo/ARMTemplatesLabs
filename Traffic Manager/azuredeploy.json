@@ -62,7 +62,8 @@
         "virtualNetworkName": "MyVNET",
         "subnetRef": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworkName'), variables('subnetName'))]",
         "networkSecurityGroupName": "default-NSG",
-        "serverTemplateName": "serverTemplate"
+        "serverTemplateName": "serverTemplate",
+        "serverTemplateURI": "https://github.com/oYPIo/ARMTemplatesLabs/blob/master/Traffic%20Manager/serversTemplate.json"
     },
     "resources": [
         {
@@ -119,7 +120,7 @@
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                   "uri": "https://csbba61417f7cd1x4021xb00.file.core.windows.net/cs-voice2of2reason-gmail-com-100320009b4213ed/TrafficManager/serversTemplate.json"
+                   "uri": "[variables('serverTemplateURI')]"
                 },
                 "parameters": {
                     "username": {
