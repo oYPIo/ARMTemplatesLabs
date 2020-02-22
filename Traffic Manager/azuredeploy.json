@@ -1,0 +1,135 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "adminUsername": {
+            "type": "string",
+            "metadata": {
+                "description": "Username for the Virtual Machine."
+            }
+        },
+        "adminPassword": {
+            "type": "securestring",
+            "metadata": {
+                "description": "Password for the Virtual Machine."
+            }
+        },
+        "dnsLabelPrefix": {
+            "type": "string",
+            "metadata": {
+                "description": "Unique DNS Name for the Public IP used to access the Virtual Machine."
+            }
+        },
+        "windowsOSVersion": {
+            "type": "string",
+            "defaultValue": "2016-Datacenter",
+            "allowedValues": [
+                "2008-R2-SP1",
+                "2012-Datacenter",
+                "2012-R2-Datacenter",
+                "2016-Nano-Server",
+                "2016-Datacenter-with-Containers",
+                "2016-Datacenter",
+                "2019-Datacenter"
+            ],
+            "metadata": {
+                "description": "The Windows version for the VM. This will pick a fully patched image of this given Windows version."
+            }
+        },
+        "vmSize": {
+            "type": "string",
+            "defaultValue": "Standard_B1s",
+            "metadata": {
+                "description": "Size of the virtual machine."
+            }
+        },
+        "location": {
+            "type": "string",
+            "defaultValue": "[resourceGroup().location]",
+            "metadata": {
+                "description": "Location for all resources."
+            }
+        }
+    },
+    "variables": {
+        "storageAccountName": "[concat(uniquestring(resourceGroup().id), 'sawinvm')]",
+        "nicName": "myVMNic",
+        "addressPrefix": "10.0.0.0/16",
+        "subnetName": "Subnet",
+        "subnetPrefix": "10.0.0.0/24",
+        "publicIPAddressName": "publicIP",
+        "vmName": "SimpleWinVM",
+        "virtualNetworkName": "MyVNET",
+        "subnetRef": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworkName'), variables('subnetName'))]",
+        "networkSecurityGroupName": "default-NSG",
+        "serverTemplateName": "serverTemplate"
+    },
+    "resources": [
+        {
+            "name": "TM-MusicStream-Priority",
+            "type": "Microsoft.Network/trafficManagerProfiles",
+            "apiVersion": "2017-05-01",
+            "tags": {
+            },
+            "location": "global",
+            "dependsOn": [
+                "[resourceId('Microsoft.Resources/deployments', variables('serverTemplateName'))]"
+            ],
+            "properties": {
+                "profileStatus": "Enabled",
+                "trafficRoutingMethod": "Priority",
+                "dnsConfig": {
+                    "relativeName": "TM-MusicStream-Priority-1",
+                    "ttl": 30
+                },
+                "monitorConfig": {
+                    "protocol": "HTTP",
+                    "port": 80,
+                    "path": "path",
+                    "intervalInSeconds": 30,
+                    "timeoutInSeconds": 5,
+                    "toleratedNumberOfFailures": 3
+                },
+                "endpoints": [
+                    {
+                        "name": "Primary-WestUS",
+                        "type": "Microsoft.Network/trafficManagerProfiles/azureEndpoints",
+                        "properties": {
+                            "targetResourceId": "[reference(variables('serverTemplateName')).outputs.WestId.value]",
+                            "endpointStatus": "Enabled",
+                            "priority": 1
+                        }
+                    },
+                    {
+                        "name": "Failover-EastAsia",
+                        "type": "Microsoft.Network/trafficManagerProfiles/azureEndpoints",
+                        "properties": {
+                            "targetResourceId": "[reference(variables('serverTemplateName')).outputs.EastId.value]",
+                            "endpointStatus": "Enabled",
+                            "priority": 2
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "name": "[variables('serverTemplateName')]",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2018-05-01",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                   "uri": "https://csbba61417f7cd1x4021xb00.file.core.windows.net/cs-voice2of2reason-gmail-com-100320009b4213ed/TrafficManager/serversTemplate.json"
+                },
+                "parameters": {
+                    "username": {
+                        "value": "[parameters('adminUsername')]"
+                    },
+                    "password": {
+                        "value": "[parameters('adminPassword')]"
+                    }
+                }
+            }
+        }
+    ]
+}

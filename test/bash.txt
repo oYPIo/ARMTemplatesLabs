@@ -1,0 +1,8 @@
+az group create \
+  --name testDev \
+  --location "West Europe"
+az group deployment create \
+  --name devenvironment \
+  --resource-group testDev \
+  --template-file azuredeploy.json \
+  --parameters azuredeploy.parameters.dev.json

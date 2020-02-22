@@ -1,0 +1,48 @@
+Deployment:
+
+az group create \
+  --name peeringDev \
+  --location "West Europe"
+az group deployment create \
+  --name devenvironment \
+  --resource-group peeringDev \
+  --template-file template.json \
+  --parameters azuredeploy.parameters.dev.json
+
+
+Verification: 
+
+watch -d -n 5 "az vm list \
+  --resource-group peeringDev \
+  --show-details \
+  --query '[*].{Name:name, ProvisioningState:provisioningState, PowerState:powerState}' \
+  --output table" 
+
+az network vnet peering list \
+    --resource-group peeringDev \
+    --vnet-name MarketingVNet \
+    --output table
+
+az network nic show-effective-route-table \
+    --resource-group peeringDev \
+    --name netInterface_Research \
+    --output table
+
+az vm list \
+    --resource-group peeringDev \
+    --query "[*].{Name:name, PrivateIP:privateIps, PublicIP:publicIps}" \
+    --show-details \
+    --output table
+
+Name         PrivateIP    PublicIP
+-----------  -----------  -------------
+MarketingVM  10.2.1.4     168.63.66.146
+SalesVM      10.1.1.4     13.69.185.32
+ResearchVM   10.3.1.4     13.95.208.197
+
+
+Sign in the VM using PublicIP:
+ssh -o StrictHostKeyChecking=no YPI@13.69.185.32
+
+Sign in the VM using PrivateIP:
+ssh -o StrictHostKeyChecking=no YPI@10.3.1.4

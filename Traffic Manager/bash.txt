@@ -1,0 +1,10 @@
+Deployment:
+
+az group create \
+  --name TM_Dev \
+  --location "West Europe"
+az group deployment create \
+  --name devenvironment \
+  --resource-group TM_Dev \
+  --template-file azuredeploy.json \
+  --parameters azuredeploy.parameters.dev.json
