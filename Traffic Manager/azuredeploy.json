@@ -63,7 +63,7 @@
         "subnetRef": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworkName'), variables('subnetName'))]",
         "networkSecurityGroupName": "default-NSG",
         "serverTemplateName": "serverTemplate",
-        "serverTemplateURI": "https://github.com/oYPIo/ARMTemplatesLabs/blob/master/Traffic%20Manager/serversTemplate.json"
+        "serverTemplateURI": "https://raw.githubusercontent.com/oYPIo/ARMTemplatesLabs/master/Traffic%20Manager/serversTemplate.json"
     },
     "resources": [
         {
