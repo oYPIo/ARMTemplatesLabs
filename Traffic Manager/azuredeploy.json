@@ -67,6 +67,53 @@
     },
     "resources": [
         {
+            "name": "TM-MusicStream-Priority",
+            "type": "Microsoft.Network/trafficManagerProfiles",
+            "apiVersion": "2017-05-01",
+            "tags": {
+            },
+            "location": "global",
+            "dependsOn": [
+                "[resourceId('Microsoft.Resources/deployments', variables('serverTemplateName'))]"
+            ],
+            "properties": {
+                "profileStatus": "Enabled",
+                "trafficRoutingMethod": "Priority",
+                "dnsConfig": {
+                    "relativeName": "TM-MusicStream-Priority-1",
+                    "ttl": 30
+                },
+                "monitorConfig": {
+                    "protocol": "HTTP",
+                    "port": 80,
+                    "path": "path",
+                    "intervalInSeconds": 30,
+                    "timeoutInSeconds": 5,
+                    "toleratedNumberOfFailures": 3
+                },
+                "endpoints": [
+                    {
+                        "name": "Primary-WestUS",
+                        "type": "Microsoft.Network/trafficManagerProfiles/azureEndpoints",
+                        "properties": {
+                            "targetResourceId": "[reference(variables('serverTemplateName')).outputs.WestId.value]",
+                            "endpointStatus": "Enabled",
+                            "priority": 1
+                        }
+                    },
+                    {
+                        "name": "Failover-EastAsia",
+                        "type": "Microsoft.Network/trafficManagerProfiles/azureEndpoints",
+                        "properties": {
+                            "targetResourceId": "[reference(variables('serverTemplateName')).outputs.EastId.value]",
+                            "endpointStatus": "Enabled",
+                            "priority": 2
+                        }
+                    }
+                ]
+            }
+        },
+        {
             "name": "[variables('serverTemplateName')]",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2018-05-01",
