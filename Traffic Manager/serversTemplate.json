@@ -257,7 +257,7 @@
             "location": "eastasia",
             "properties": {
                 "hardwareProfile": {
-                    "vmSize": ""
+                    "vmSize": "Standard_B1s"
                 },
                 "storageProfile": {
                     "imageReference": {
