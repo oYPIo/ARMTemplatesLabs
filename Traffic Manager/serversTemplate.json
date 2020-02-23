@@ -26,20 +26,20 @@
         "eastasiaVMNicResourceId": "[resourceId('Microsoft.Network/networkInterfaces', variables('eastasiaVMNicName'))]",
         "eastasiaVMNicPIPResourceId": "[resourceId('Microsoft.Network/publicIPAddresses', variables('eastasiaVMNicPIPName'))]",
         "eastasiaSubnetResourceId": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('eastasiaVnetName'), variables('eastasiaSubnetName'))]",
-        "westus2VnetName": "westus2-vnet",
-        "westus2VnetAddressPrefix": "10.2.0.0/16",
-        "westus2VnetResourceId": "[resourceId('Microsoft.Network/virtualNetworks', variables('westus2VnetName'))]",
-        "westus2NSGName": "westus2-nsg",
-        "westus2NSGResourceId": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('westus2NSGName'))]",
-        "westus2VMName": "westus2-vm",
-        "westus2VMNicName": "westus2-vm-nic",
-        "westus2VMNicPIPName": "westus2-vm-nic-pip",
-        "westus2SubnetName": "westus2-subnet",
-        "westus2SubnetPrefix": "10.2.0.0/24",
-        "westus2VMDNSName": "[concat(variables('westus2VMName'), '-', uniqueString(resourceGroup().id))]",
-        "westus2VMNicResourceId": "[resourceId('Microsoft.Network/networkInterfaces', variables('westus2VMNicName'))]",
-        "westus2VMNicPIPResourceId": "[resourceId('Microsoft.Network/publicIPAddresses', variables('westus2VMNicPIPName'))]",
-        "westus2SubnetResourceId": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('westus2VnetName'), variables('westus2SubnetName'))]"
+        "westusVnetName": "westus-vnet",
+        "westusVnetAddressPrefix": "10.2.0.0/16",
+        "westusVnetResourceId": "[resourceId('Microsoft.Network/virtualNetworks', variables('westusVnetName'))]",
+        "westusNSGName": "westus-nsg",
+        "westusNSGResourceId": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('westusNSGName'))]",
+        "westusVMName": "westus-vm",
+        "westusVMNicName": "westus-vm-nic",
+        "westusVMNicPIPName": "westus-vm-nic-pip",
+        "westusSubnetName": "westus-subnet",
+        "westusSubnetPrefix": "10.2.0.0/24",
+        "westusVMDNSName": "[concat(variables('westusVMName'), '-', uniqueString(resourceGroup().id))]",
+        "westusVMNicResourceId": "[resourceId('Microsoft.Network/networkInterfaces', variables('westusVMNicName'))]",
+        "westusVMNicPIPResourceId": "[resourceId('Microsoft.Network/publicIPAddresses', variables('westusVMNicPIPName'))]",
+        "westusSubnetResourceId": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('westusVnetName'), variables('westusSubnetName'))]"
     },
     "resources": [
         {
@@ -69,9 +69,9 @@
         },
         {
             "type": "Microsoft.Network/networkSecurityGroups",
-            "name": "[variables('westus2NSGName')]",
+            "name": "[variables('westusNSGName')]",
             "apiVersion": "2018-08-01",
-            "location": "westus2",
+            "location": "westus",
             "properties": {
                 "securityRules": [
                     {
@@ -117,20 +117,20 @@
         },
         {
             "type": "Microsoft.Network/virtualNetworks",
-            "name": "[variables('westus2VnetName')]",
+            "name": "[variables('westusVnetName')]",
             "apiVersion": "2018-08-01",
-            "location": "westus2",
+            "location": "westus",
             "properties": {
                 "addressSpace": {
                     "addressPrefixes": [
-                        "[variables('westus2VnetAddressPrefix')]"
+                        "[variables('westusVnetAddressPrefix')]"
                     ]
                 },
                 "subnets": [
                     {
-                        "name": "[variables('westus2SubnetName')]",
+                        "name": "[variables('westusSubnetName')]",
                         "properties": {
-                            "addressPrefix": "[variables('westus2SubnetPrefix')]"
+                            "addressPrefix": "[variables('westusSubnetPrefix')]"
                         }
                     }
                 ]
@@ -163,14 +163,14 @@
                 "name": "Basic",
                 "tier": "Regional"
             },
-            "name": "[variables('westus2VMNicPIPName')]",
+            "name": "[variables('westusVMNicPIPName')]",
             "apiVersion": "2018-08-01",
-            "location": "westus2",
+            "location": "westus",
             "properties": {
                 "publicIPAddressVersion": "IPv4",
                 "publicIPAllocationMethod": "Static",
                 "dnsSettings": {
-                    "domainNameLabel": "[variables('westus2VMDNSName')]"
+                    "domainNameLabel": "[variables('westusVMDNSName')]"
                 }
             },
             "dependsOn": [
@@ -215,9 +215,9 @@
         },
         {
             "type": "Microsoft.Network/networkInterfaces",
-            "name": "[variables('westus2VMNicName')]",
+            "name": "[variables('westusVMNicName')]",
             "apiVersion": "2018-08-01",
-            "location": "westus2",
+            "location": "westus",
             "scale": null,
             "properties": {
                 "ipConfigurations": [
@@ -227,10 +227,10 @@
                             "privateIPAddress": "10.2.0.4",
                             "privateIPAllocationMethod": "Static",
                             "publicIPAddress": {
-                                "id": "[variables('westus2VMNicPIPResourceId')]"
+                                "id": "[variables('westusVMNicPIPResourceId')]"
                             },
                             "subnet": {
-                                "id": "[variables('westus2SubnetResourceId')]"
+                                "id": "[variables('westusSubnetResourceId')]"
                             },
                             "primary": true,
                             "privateIPAddressVersion": "IPv4"
@@ -241,13 +241,13 @@
                 "enableIPForwarding": false,
                 "primary": true,
                 "networkSecurityGroup": {
-                    "id": "[variables('westus2NSGResourceId')]"
+                    "id": "[variables('westusNSGResourceId')]"
                 }
             },
             "dependsOn": [
-                "[variables('westus2VMNicPIPName')]",
-                "[variables('westus2VnetResourceId')]",
-                "[variables('westus2NSGResourceId')]"
+                "[variables('westusVMNicPIPName')]",
+                "[variables('westusVnetResourceId')]",
+                "[variables('westusNSGResourceId')]"
             ]
         },
         {
@@ -257,7 +257,7 @@
             "location": "eastasia",
             "properties": {
                 "hardwareProfile": {
-                    "vmSize": "Standard_B1s"
+                    "vmSize": ""
                 },
                 "storageProfile": {
                     "imageReference": {
@@ -336,9 +336,9 @@
         },
         {
             "type": "Microsoft.Compute/virtualMachines",
-            "name": "[variables('westus2VMName')]",
+            "name": "[variables('westusVMName')]",
             "apiVersion": "2018-06-01",
-            "location": "westus2",
+            "location": "westus",
             "properties": {
                 "hardwareProfile": {
                     "vmSize": "Standard_B1s"
@@ -352,7 +352,7 @@
                     },
                     "osDisk": {
                         "osType": "Linux",
-                        "name": "[concat(variables('westus2VMName'), '-disk')]",
+                        "name": "[concat(variables('westusVMName'), '-disk')]",
                         "createOption": "FromImage",
                         "caching": "ReadWrite",
                         "managedDisk": {
@@ -364,7 +364,7 @@
                     ]
                 },
                 "osProfile": {
-                    "computerName": "[variables('westus2VMName')]",
+                    "computerName": "[variables('westusVMName')]",
                     "adminUsername": "[parameters('username')]",
                     "adminPassword": "[parameters('password')]",
                     "linuxConfiguration": {
@@ -378,7 +378,7 @@
                 "networkProfile": {
                     "networkInterfaces": [
                         {
-                            "id": "[variables('westus2VMNicResourceId')]"
+                            "id": "[variables('westusVMNicResourceId')]"
                         }
                     ]
                 },
@@ -393,7 +393,7 @@
                     "type": "extensions",
                     "name": "apache-ext",
                     "apiVersion": "2018-10-01",
-                    "location": "westus2",
+                    "location": "westus",
                     "properties": {
                         "publisher": "Microsoft.Azure.Extensions",
                         "type": "CustomScript",
@@ -403,25 +403,25 @@
                             "skipDos2Unix": true
                         },
                         "protectedSettings": {
-                            "commandToExecute": "sh setup-nginx.sh westus2",
+                            "commandToExecute": "sh setup-nginx.sh westus",
                             "fileUris": [
                                 "[uri(variables('deploymentUrl'), 'setup-nginx.sh')]"
                             ]
                         }
                     },
                     "dependsOn": [
-                        "[variables('westus2VMName')]"
+                        "[variables('westusVMName')]"
                     ]
                 }
             ],
             "dependsOn": [
-                "[variables('westus2VMNicName')]"
+                "[variables('westusVMNicName')]"
             ]
         }
     ],
     "outputs": {
         "WestId": {
-            "value": "[resourceId('Microsoft.Network/publicIPAddresses', variables('westus2VMNicName'))]",
+            "value": "[resourceId('Microsoft.Network/publicIPAddresses', variables('westusVMNicName'))]",
             "type": "string"
         },
         "EastId": {
