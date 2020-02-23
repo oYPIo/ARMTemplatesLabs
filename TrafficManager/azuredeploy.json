@@ -52,6 +52,7 @@
         }
     },
     "variables": {
+        "deploymentUrl": "[deployment().properties.templateLink.uri]",
         "storageAccountName": "[concat(uniquestring(resourceGroup().id), 'sawinvm')]",
         "nicName": "myVMNic",
         "addressPrefix": "10.0.0.0/16",
@@ -63,7 +64,7 @@
         "subnetRef": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworkName'), variables('subnetName'))]",
         "networkSecurityGroupName": "default-NSG",
         "serverTemplateName": "serverTemplate",
-        "serverTemplateURI": "https://raw.githubusercontent.com/oYPIo/ARMTemplatesLabs/master/Traffic%20Manager/serversTemplate.json"
+        "serverTemplateURI": "[uri(variables('deploymentUrl'), 'serversTemplate.json')]"
     },
     "resources": [
         {
