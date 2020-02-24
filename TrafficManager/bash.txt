@@ -6,5 +6,5 @@ az group create \
 az group deployment create \
   --name devenvironment \
   --resource-group TM_Dev \
-  --template-uri https://raw.githubusercontent.com/oYPIo/ARMTemplatesLabs/master/Traffic%20Manager/azuredeploy.json \
+  --template-uri https://raw.githubusercontent.com/oYPIo/ARMTemplatesLabs/master/TrafficManager/azuredeploy.json \
   --parameters azuredeploy.parameters.dev.json

@@ -1,0 +1,10 @@
+Deployment:
+
+az group create \
+  --name LB_Dev \
+  --location "West Europe"
+az group deployment create \
+  --name devenvironment \
+  --resource-group LB_Dev \
+  --template-uri https://raw.githubusercontent.com/oYPIo/ARMTemplatesLabs/master/LoadBalancing/azuredeploy.json \
+  --parameters azuredeploy.parameters.dev.json

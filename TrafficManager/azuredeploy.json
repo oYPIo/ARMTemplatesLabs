@@ -64,7 +64,7 @@
         "subnetRef": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworkName'), variables('subnetName'))]",
         "networkSecurityGroupName": "default-NSG",
         "serverTemplateName": "serverTemplate",
-        "serverTemplateURI": "[uri(variables('deploymentUrl'), 'serversTemplate.json')]"
+        "serverTemplateURI": "[uri(variables('deploymentUrl'), 'serverTemplate.json')]"
     },
     "resources": [
         {
