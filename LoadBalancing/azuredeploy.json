@@ -41,7 +41,7 @@
     },
     "variables": {
         "lbName": "MyLb",
-        "lbSkuName": "",
+        "lbSkuName": "Basic",
         "lbPublicIpAddressName": "[concat(parameters('projectName'),'-lbPublicIP')]",
         "lbFrontEndName": "LoadBalancerFrontEnd",
         "lbBackendPoolName": "LoadBalancerBackEndPool",
@@ -100,7 +100,7 @@
                             "idleTimeoutInMinutes": 4,
                             "protocol": "Tcp",
                             "enableTcpReset": false,
-                            "loadDistribution": "SourceIP",
+                            "loadDistribution": "Default",
                             "disableOutboundSnat": false,
                             "probe": {
                                 "id": "[resourceId('Microsoft.Network/loadBalancers/probes', variables('lbName'), variables('lbProbeName'))]"
@@ -114,7 +114,7 @@
                         "properties": {
                             "protocol": "tcp",
                             "port": 80,
-                            "requestPath": "/",
+                            "requestPath": null,
                             "intervalInSeconds": 5,
                             "numberOfProbes": 2
                         }
@@ -210,9 +210,6 @@
             "apiVersion": "2018-10-01",
             "name": "[concat(parameters('projectName'),'-vm', copyIndex(1))]",
             "location": "[parameters('location')]",
-            "zones": [
-                "[copyIndex(1)]"
-            ],
             "copy": {
                 "name": "vmCopy",
                 "count": "[variables('numberOfInstances')]"
@@ -266,7 +263,7 @@
             "name": "[concat(parameters('projectName'),'-vm', copyIndex(1), '-publicIp')]",
             "location": "[parameters('location')]",
             "sku": {
-                "name": "Standard"
+                "name": "[variables('lbSkuName')]"
             },
             "copy": {
                 "name": "publicIPAddressCopy",
@@ -343,7 +340,7 @@
     "outputs": {
         "LbPublicIP": {
             "type": "string",
-            "value": "[reference(variables('lbName')).IpAddress]"
+            "value": "[reference(variables('lbPublicIpAddressName')).ipAddress]"
         }
     }
 }
