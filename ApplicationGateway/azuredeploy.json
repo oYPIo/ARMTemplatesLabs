@@ -211,7 +211,7 @@
         {
             "type": "Microsoft.Compute/virtualMachines/extensions",
             "apiVersion": "2018-10-01",
-            "name": "[concat(parameters('projectName'),'-vm', copyIndex(1), '/', 'InstallWebServer')]",
+            "name": "[concat('webServer', copyIndex(1), '/', 'InstallWebServer')]",
             "location": "[parameters('location')]",
             "copy": {
                 "name": "extensionCopy",
