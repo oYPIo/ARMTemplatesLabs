@@ -100,7 +100,7 @@
                             "idleTimeoutInMinutes": 4,
                             "protocol": "Tcp",
                             "enableTcpReset": false,
-                            "loadDistribution": "SourceIP",
+                            "loadDistribution": "Default",
                             "disableOutboundSnat": false,
                             "probe": {
                                 "id": "[resourceId('Microsoft.Network/loadBalancers/probes', variables('lbName'), variables('lbProbeName'))]"
