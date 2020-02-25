@@ -210,7 +210,6 @@
             "apiVersion": "2018-10-01",
             "name": "[concat(parameters('projectName'),'-vm', copyIndex(1))]",
             "location": "[parameters('location')]",
-            "zones": [],
             "copy": {
                 "name": "vmCopy",
                 "count": "[variables('numberOfInstances')]"
