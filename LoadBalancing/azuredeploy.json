@@ -41,7 +41,7 @@
     },
     "variables": {
         "lbName": "MyLb",
-        "lbSkuName": "Basic",
+        "lbSkuName": "Standard",
         "lbPublicIpAddressName": "[concat(parameters('projectName'),'-lbPublicIP')]",
         "lbFrontEndName": "LoadBalancerFrontEnd",
         "lbBackendPoolName": "LoadBalancerBackEndPool",
