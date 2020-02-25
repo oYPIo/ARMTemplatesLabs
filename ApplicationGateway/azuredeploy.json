@@ -150,7 +150,6 @@
                     "computerName": "[concat(parameters('projectName'),'-vm', copyIndex(1))]",
                     "adminUsername": "[parameters('adminUsername')]",
                     "adminPassword": "[parameters('adminPassword')]",
-                    "customData": "[ver]"
                     "windowsConfiguration": {
                         "enableAutomaticUpdates": true,
                         "provisionVmAgent": true
