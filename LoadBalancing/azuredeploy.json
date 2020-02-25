@@ -340,7 +340,7 @@
     "outputs": {
         "LbPublicIP": {
             "type": "string",
-            "value": "[reference(variables('lbPublicIpAddressName')).properties.ipAddress]"
+            "value": "[reference(variables('lbPublicIpAddressName')).ipAddress]"
         }
     }
 }
