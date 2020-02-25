@@ -42,14 +42,14 @@
     "variables": {
         "ipAddressSKU": "Basic",
         "nsgName": "[concat(parameters('projectName'),'-nsg')]",
-        "vNetName": "[concat(parameters('projectName'),'-vnet')]",
-        "vNetAddressPrefix": "10.0.1.0/24",
-        "vNetSubnetName": "BackendSubnet",
+        "vNetName": "vehicleAppVnet",
+        "vNetAddressPrefix": "10.0.0.0/16",
+        "vNetSubnetName": "webServerSubnet",
         "vNetSubnetAddressPrefix": "10.0.1.0/24",
-        "availabilitySetName": "AvSet",
         "vmSize": "Standard_DS1_v2",
-        "vmStorageAccountType": "Premium_LRS",
-        "numberOfInstances": 2
+        "vmStorageAccountType": "Standard_LRS",
+        "numberOfInstances": 2,
+        "extensionsFileURI": "https://raw.githubusercontent.com/MicrosoftDocs/mslearn-load-balance-web-traffic-with-application-gateway/master/scripts/vmconfig.sh"
     },
     "resources": [
         {
@@ -112,20 +112,16 @@
         {
             "type": "Microsoft.Compute/virtualMachines",
             "apiVersion": "2018-10-01",
-            "name": "[concat(parameters('projectName'),'-vm', copyIndex(1))]",
+            "name": "[concat('webServer', copyIndex(1))]",
             "location": "[parameters('location')]",
             "copy": {
                 "name": "vmCopy",
                 "count": "[variables('numberOfInstances')]"
             },
             "dependsOn": [
-                "networkInterfaceCopy",
-                "[resourceId('Microsoft.Compute/availabilitySets',variables('availabilitySetName'))]"
+                "networkInterfaceCopy"
             ],
             "properties": {
-                "availabilitySet": {
-                    "id": "[resourceId('Microsoft.Compute/availabilitySets',variables('availabilitySetName'))]"
-                },
                 "hardwareProfile": {
                     "vmSize": "[variables('vmSize')]"
                 },
@@ -154,6 +150,7 @@
                     "computerName": "[concat(parameters('projectName'),'-vm', copyIndex(1))]",
                     "adminUsername": "[parameters('adminUsername')]",
                     "adminPassword": "[parameters('adminPassword')]",
+                    "customData": "[ver]"
                     "windowsConfiguration": {
                         "enableAutomaticUpdates": true,
                         "provisionVmAgent": true
@@ -230,7 +227,8 @@
                 "typeHandlerVersion": "1.7",
                 "autoUpgradeMinorVersion": true,
                 "settings": {
-                    "commandToExecute": "powershell.exe Install-WindowsFeature -name Web-Server -IncludeManagementTools && powershell.exe remove-item 'C:\\inetpub\\wwwroot\\iisstart.htm' && powershell.exe Add-Content -Path 'C:\\inetpub\\wwwroot\\iisstart.htm' -Value $('Hello World from ' + $env:computername)"
+                    "fileUris": "[variables('extensionsFileURI')]",
+                    "commandToExecute": "powershell.exe -ExecutionPolicy Unrestricted -File vmconfig.sh"
                 }
             }
         }
