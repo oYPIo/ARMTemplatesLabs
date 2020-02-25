@@ -114,7 +114,7 @@
                         "properties": {
                             "protocol": "tcp",
                             "port": 80,
-                            "requestPath": "",
+                            "requestPath": "null",
                             "intervalInSeconds": 5,
                             "numberOfProbes": 2
                         }
