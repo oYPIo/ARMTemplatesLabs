@@ -1,0 +1,10 @@
+Deployment:
+
+az group create \
+  --name AG_Dev \
+  --location "West Europe"
+az group deployment create \
+  --name devenvironment \
+  --resource-group AG_Dev \
+  --template-uri https://raw.githubusercontent.com/oYPIo/ARMTemplatesLabs/test/ApplicationGateway/azuredeploy.json \
+  --parameters azuredeploy.parameters.dev.json
