@@ -41,7 +41,7 @@
     },
     "variables": {
         "lbName": "MyLb",
-        "lbSkuName": "Standard",
+        "lbSkuName": "Basic",
         "lbPublicIpAddressName": "[concat(parameters('projectName'),'-lbPublicIP')]",
         "lbFrontEndName": "LoadBalancerFrontEnd",
         "lbBackendPoolName": "LoadBalancerBackEndPool",
@@ -266,7 +266,7 @@
             "name": "[concat(parameters('projectName'),'-vm', copyIndex(1), '-publicIp')]",
             "location": "[parameters('location')]",
             "sku": {
-                "name": "Standard"
+                "name": "[variables('lbSkuName')]"
             },
             "copy": {
                 "name": "publicIPAddressCopy",
