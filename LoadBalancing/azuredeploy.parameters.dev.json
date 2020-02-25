@@ -8,8 +8,11 @@
         "adminPassword": {
             "value": "dogdogdogdogD0g"
         },
-        "dnsLabelPrefix": {
-           "value": "jenkins012"
+        "projectName": {
+            "value": "LbProject"
+        },
+        "location": {
+            "value": "westeurope"
         }
     }
 }
