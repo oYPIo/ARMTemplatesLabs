@@ -161,31 +161,24 @@
             }
         },
         {
-            "apiVersion": "2018-06-01",
             "type": "Microsoft.Compute/virtualMachines/extensions",
-            "name": "[concat(variables('vmName'),copyindex(1), '/config-app')]",
-            "location": "[resourceGroup().location]",
-            "dependsOn": [
-                "[concat('Microsoft.Compute/virtualMachines/', variables('vmName'),copyindex(1))]"
-            ],
-            "tags": {
-                "displayName": "config-app"
-            },
+            "apiVersion": "2018-10-01",
+            "name": "[concat(parameters('projectName'),'-vm', copyIndex(1), '/', 'InstallWebServer')]",
+            "location": "[parameters('location')]",
             "copy": {
-                "name": "vmExtensionCopy",
+                "name": "extensionCopy",
                 "count": "[variables('numberOfInstances')]"
             },
+            "dependsOn": [
+                "vmCopy"
+            ],
             "properties": {
                 "publisher": "Microsoft.Compute",
                 "type": "CustomScriptExtension",
-                "typeHandlerVersion": "1.10",
+                "typeHandlerVersion": "1.7",
                 "autoUpgradeMinorVersion": true,
                 "settings": {
-                    "fileUris": [
-                        "[variables('extensionsFileURI')]"
-                    ]
-                },
-                "protectedSettings": {
+                    "fileUris": "[variables('extensionsFileURI')]",
                     "commandToExecute": "sh vmconfig.sh"
                 }
             }
