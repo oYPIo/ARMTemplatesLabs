@@ -46,10 +46,13 @@
         "vNetAddressPrefix": "10.0.0.0/16",
         "vNetSubnetName": "webServerSubnet",
         "vNetSubnetAddressPrefix": "10.0.1.0/24",
+        "vmName": "[concat(parameters('projectName'),'-vm')]",
         "vmSize": "Standard_DS1_v2",
         "vmStorageAccountType": "Standard_LRS",
         "numberOfInstances": 2,
-        "extensionsFileURI": ["https://raw.githubusercontent.com/MicrosoftDocs/mslearn-load-balance-web-traffic-with-application-gateway/master/scripts/vmconfig.sh"]
+        "extensionsFileURI": [
+            "https://raw.githubusercontent.com/MicrosoftDocs/mslearn-load-balance-web-traffic-with-application-gateway/master/scripts/vmconfig.sh"
+        ]
     },
     "resources": [
         {
@@ -158,24 +161,25 @@
             },
             "resources": [
                 {
+                    "name": "config-app",
                     "type": "extensions",
-                    "name": "apache-ext",
-                    "apiVersion": "2018-10-01",
-                    "location": "[parameters('location')]",
+                    "location": "[resourceGroup().location]",
+                    "apiVersion": "2019-03-01",
                     "dependsOn": [
-                        "[variables('vNetName')]",
-                        "[concat(parameters('projectName'),'-vm', copyIndex(1))]"
+                        "[concat('Microsoft.Compute/virtualMachines/', concat(variables('vmName'),copyindex(1)))]"
                     ],
+                    "tags": {
+                        "displayName": "config-app"
+                    },
                     "properties": {
-                        "publisher": "Microsoft.Compute",
-                        "type": "CustomScriptExtension",
-                        "typeHandlerVersion": "1.7",
+                        "publisher": "Microsoft.Azure.Extensions",
+                        "type": "CustomScript",
+                        "typeHandlerVersion": "2.1",
                         "autoUpgradeMinorVersion": true,
                         "settings": {
-                            "skipDos2Unix": true
                         },
                         "protectedSettings": {
-                            "commandToExecute": "sh vmconfig.sh westus",
+                            "commandToExecute": "sh vmconfig.sh",
                             "fileUris": [
                                 "[variables('extensionsFileURI')]"
                             ]
