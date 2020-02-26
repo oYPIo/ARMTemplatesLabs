@@ -178,7 +178,8 @@
                         }
                     },
                     "dependsOn": [
-                        "[variables('vNetName')]"
+                        "[variables('vNetName')]",
+                        "[concat(parameters('projectName'),'-vm', copyIndex(1))]"
                     ]
                 }
             ]
