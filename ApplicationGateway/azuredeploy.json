@@ -158,35 +158,33 @@
                         "provisionVmAgent": true
                     }
                 }
+            }
+        },
+        {
+            "apiVersion": "2018-06-01",
+            "type": "Microsoft.Compute/virtualMachines/extensions",
+            "name": "virtualMachineName/config-app",
+            "location": "[resourceGroup().location]",
+            "dependsOn": [
+                "[concat('Microsoft.Compute/virtualMachines/', variables('vmName'),copyindex(1))]"
+            ],
+            "tags": {
+                "displayName": "config-app"
             },
-            "resources": [
-                {
-                    "apiVersion": "2018-06-01",
-                    "type": "Microsoft.Compute/virtualMachines/extensions",
-                    "name": "virtualMachineName/config-app",
-                    "location": "[resourceGroup().location]",
-                    "dependsOn": [
-                        "[concat('Microsoft.Compute/virtualMachines/', variables('vmName'),copyindex(1))]"
-                    ],
-                    "tags": {
-                        "displayName": "config-app"
-                    },
-                    "properties": {
-                        "publisher": "Microsoft.Compute",
-                        "type": "CustomScriptExtension",
-                        "typeHandlerVersion": "1.10",
-                        "autoUpgradeMinorVersion": true,
-                        "settings": {
-                            "fileUris": [
-                                "[variables('extensionsFileURI')]"
-                            ]
-                        },
-                        "protectedSettings": {
-                            "commandToExecute": "sh vmconfig.sh"
-                        }
-                    }
+            "properties": {
+                "publisher": "Microsoft.Compute",
+                "type": "CustomScriptExtension",
+                "typeHandlerVersion": "1.10",
+                "autoUpgradeMinorVersion": true,
+                "settings": {
+                    "fileUris": [
+                        "[variables('extensionsFileURI')]"
+                    ]
+                },
+                "protectedSettings": {
+                    "commandToExecute": "sh vmconfig.sh"
                 }
-            ]
+            }
         },
         {
             "type": "Microsoft.Network/publicIPAddresses",
