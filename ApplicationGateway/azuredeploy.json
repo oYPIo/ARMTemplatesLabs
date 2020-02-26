@@ -162,8 +162,12 @@
                     "name": "apache-ext",
                     "apiVersion": "2018-10-01",
                     "location": "[parameters('location')]",
+                    "dependsOn": [
+                        "[variables('vNetName')]",
+                        "[concat(parameters('projectName'),'-vm', copyIndex(1))]"
+                    ],
                     "properties": {
-                        "publisher": "Microsoft.Azure.Extensions",
+                        "publisher": "Microsoft.Compute",
                         "type": "CustomScript",
                         "typeHandlerVersion": "2.0",
                         "autoUpgradeMinorVersion": true,
@@ -176,11 +180,7 @@
                                 "[variables('extensionsFileURI')]"
                             ]
                         }
-                    },
-                    "dependsOn": [
-                        "[variables('vNetName')]",
-                        "[concat(parameters('projectName'),'-vm', copyIndex(1))]"
-                    ]
+                    }
                 }
             ]
         },
