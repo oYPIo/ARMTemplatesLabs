@@ -161,7 +161,7 @@
                     "type": "extensions",
                     "name": "apache-ext",
                     "apiVersion": "2018-10-01",
-                    "location": "westus",
+                    "location": "[parameters('location')]",
                     "properties": {
                         "publisher": "Microsoft.Azure.Extensions",
                         "type": "CustomScript",
