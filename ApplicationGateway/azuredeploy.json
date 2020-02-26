@@ -49,7 +49,7 @@
         "vmSize": "Standard_DS1_v2",
         "vmStorageAccountType": "Standard_LRS",
         "numberOfInstances": 2,
-        "extensionsFileURI": "https://raw.githubusercontent.com/MicrosoftDocs/mslearn-load-balance-web-traffic-with-application-gateway/master/scripts/vmconfig.sh"
+        "extensionsFileURI": ["https://raw.githubusercontent.com/MicrosoftDocs/mslearn-load-balance-web-traffic-with-application-gateway/master/scripts/vmconfig.sh"]
     },
     "resources": [
         {
