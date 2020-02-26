@@ -155,7 +155,33 @@
                         "provisionVmAgent": true
                     }
                 }
-            }
+            },
+            "resources": [
+                {
+                    "type": "extensions",
+                    "name": "apache-ext",
+                    "apiVersion": "2018-10-01",
+                    "location": "westus",
+                    "properties": {
+                        "publisher": "Microsoft.Azure.Extensions",
+                        "type": "CustomScript",
+                        "typeHandlerVersion": "2.0",
+                        "autoUpgradeMinorVersion": true,
+                        "settings": {
+                            "skipDos2Unix": true
+                        },
+                        "protectedSettings": {
+                            "commandToExecute": "sh vmconfig.sh westus",
+                            "fileUris": [
+                                "[variables('extensionsFileURI')]"
+                            ]
+                        }
+                    },
+                    "dependsOn": [
+                        "[variables('vNetName')]"
+                    ]
+                }
+            ]
         },
         {
             "type": "Microsoft.Network/publicIPAddresses",
@@ -205,29 +231,6 @@
                 ],
                 "networkSecurityGroup": {
                     "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('nsgName'))]"
-                }
-            }
-        },
-        {
-            "type": "Microsoft.Compute/virtualMachines/extensions",
-            "apiVersion": "2018-10-01",
-            "name": "[concat(parameters('projectName'),'-vm', copyIndex(1), '/', 'InstallWebServer')]",
-            "location": "[parameters('location')]",
-            "copy": {
-                "name": "extensionCopy",
-                "count": "[variables('numberOfInstances')]"
-            },
-            "dependsOn": [
-                "vmCopy"
-            ],
-            "properties": {
-                "publisher": "Microsoft.Compute",
-                "type": "CustomScriptExtension",
-                "typeHandlerVersion": "1.7",
-                "autoUpgradeMinorVersion": true,
-                "settings": {
-                    "fileUris": "[variables('extensionsFileURI')]",
-                    "commandToExecute": "powershell.exe -ExecutionPolicy Unrestricted -File vmconfig.sh"
                 }
             }
         }
