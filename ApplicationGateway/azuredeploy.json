@@ -161,28 +161,28 @@
             },
             "resources": [
                 {
-                    "name": "config-app",
-                    "type": "extensions",
+                    "apiVersion": "2018-06-01",
+                    "type": "Microsoft.Compute/virtualMachines/extensions",
+                    "name": "virtualMachineName/config-app",
                     "location": "[resourceGroup().location]",
-                    "apiVersion": "2019-03-01",
                     "dependsOn": [
-                        "[concat('Microsoft.Compute/virtualMachines/', concat(variables('vmName'),copyindex(1)))]"
+                        "[concat('Microsoft.Compute/virtualMachines/', variables('vmName'),copyindex(1))]"
                     ],
                     "tags": {
                         "displayName": "config-app"
                     },
                     "properties": {
-                        "publisher": "Microsoft.Azure.Extensions",
-                        "type": "CustomScript",
-                        "typeHandlerVersion": "2.1",
+                        "publisher": "Microsoft.Compute",
+                        "type": "CustomScriptExtension",
+                        "typeHandlerVersion": "1.10",
                         "autoUpgradeMinorVersion": true,
                         "settings": {
-                        },
-                        "protectedSettings": {
-                            "commandToExecute": "sh vmconfig.sh",
                             "fileUris": [
                                 "[variables('extensionsFileURI')]"
                             ]
+                        },
+                        "protectedSettings": {
+                            "commandToExecute": "sh vmconfig.sh"
                         }
                     }
                 }
