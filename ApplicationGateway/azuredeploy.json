@@ -169,7 +169,7 @@
                     "properties": {
                         "publisher": "Microsoft.Compute",
                         "type": "CustomScript",
-                        "typeHandlerVersion": "2.0",
+                        "typeHandlerVersion": "1.7",
                         "autoUpgradeMinorVersion": true,
                         "settings": {
                             "skipDos2Unix": true
