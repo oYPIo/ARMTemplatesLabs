@@ -37,6 +37,17 @@
             "metadata": {
                 "description": "Specifies the virtual machine administrator password."
             }
+        },
+        "authenticationType": {
+            "type": "string",
+            "defaultValue": "sshPublicKey",
+            "allowedValues": [
+                "sshPublicKey",
+                "password"
+            ],
+            "metadata": {
+                "description": "Type of authentication to use on the Virtual Machine. SSH key is recommended."
+            }
         }
     },
     "variables": {
@@ -52,7 +63,18 @@
         "numberOfInstances": 2,
         "extensionsFileURI": [
             "https://raw.githubusercontent.com/MicrosoftDocs/mslearn-load-balance-web-traffic-with-application-gateway/master/scripts/vmconfig.sh"
-        ]
+        ],
+        "linuxConfiguration": {
+            "disablePasswordAuthentication": true,
+            "ssh": {
+                "publicKeys": [
+                    {
+                        "path": "[concat('/home/', parameters('adminUsername'), '/.ssh/authorized_keys')]",
+                        "keyData": "[parameters('adminPassword')]"
+                    }
+                ]
+            }
+        }
     },
     "resources": [
         {
@@ -130,9 +152,9 @@
                 },
                 "storageProfile": {
                     "imageReference": {
-                        "publisher": "MicrosoftWindowsServer",
-                        "offer": "WindowsServer",
-                        "sku": "2019-Datacenter",
+                        "publisher": "Canonical",
+                        "offer": "UbuntuServer",
+                        "sku": "18.04-LTS",
                         "version": "latest"
                     },
                     "osDisk": {
@@ -153,10 +175,7 @@
                     "computerName": "[concat('webServer', copyIndex(1))]",
                     "adminUsername": "[parameters('adminUsername')]",
                     "adminPassword": "[parameters('adminPassword')]",
-                    "windowsConfiguration": {
-                        "enableAutomaticUpdates": true,
-                        "provisionVmAgent": true
-                    }
+                    "linuxConfiguration": "[if(equals(parameters('authenticationType'), 'password'), json('null'), variables('linuxConfiguration'))]"
                 }
             }
         },
