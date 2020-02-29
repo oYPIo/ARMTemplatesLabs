@@ -63,18 +63,7 @@
         "numberOfInstances": 2,
         "extensionsFileURI": [
             "https://raw.githubusercontent.com/MicrosoftDocs/mslearn-load-balance-web-traffic-with-application-gateway/master/scripts/vmconfig.sh"
-        ],
-        "linuxConfiguration": {
-            "disablePasswordAuthentication": true,
-            "ssh": {
-                "publicKeys": [
-                    {
-                        "path": "[concat('/home/', parameters('adminUsername'), '/.ssh/authorized_keys')]",
-                        "keyData": "[parameters('adminPassword')]"
-                    }
-                ]
-            }
-        }
+        ]
     },
     "resources": [
         {
@@ -175,7 +164,18 @@
                     "computerName": "[concat('webServer', copyIndex(1))]",
                     "adminUsername": "[parameters('adminUsername')]",
                     "adminPassword": "[parameters('adminPassword')]",
-                    "linuxConfiguration": "[if(equals(parameters('authenticationType'), 'password'), json('null'), variables('linuxConfiguration'))]"
+                    "linuxConfiguration": {
+                        "disablePasswordAuthentication": true,
+                        "ssh": {
+                            "publicKeys": [
+                                {
+                                    "path": "[concat('/home/', parameters('adminUsername'), '/.ssh/authorized_keys')]",
+                                    "keyData": "[parameters('adminPassword')]"
+                                }
+                            ]
+                        }
+
+                    }
                 }
             }
         },
