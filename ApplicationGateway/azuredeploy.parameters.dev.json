@@ -6,7 +6,10 @@
             "value": "YPI"
         },
         "adminPassword": {
-            "value": "GEN-SSH-PUB-KEY"
+            "value": "dogdogdogdogD0g"
+        },
+        "adminPublicKey": {
+            "value": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC3bUcg4UTDndzEUTVSWi6389fF8rDJkK7cfmodvpR7COQq+RXDzvx4Gm66oYnhGR0ZtfBqOhK5crpjhJ6wknJs58yvhzFZQOesgAJAR501fv6lvEsWh0+C3meHGWDyO6xfpKEguTgr787TuX8wZJ56Cs6GSaEVUqoaXd4giAZ+avFdht/zhUwz39bBEDSUW9AI6rEzoHiMXEcvAXlSKJ5GJfr8bGzygSTsRRigrgKCuqx6vDnhiuEucNURwkFeAHOm9f0/p1z/pVB+7+mUjwmgU1w/KhDoo5ITHkPkSXTTvWLwozWktdFNPWdzR8mO2SJQTx5CCe9yU5/cUX9Ke6D5 yaroslav@cc-95e6c602-7cb67f7bd7-pdp4s"
         },
         "projectName": {
             "value": "ApplicationGatewayProject"
