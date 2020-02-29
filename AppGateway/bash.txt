@@ -8,3 +8,12 @@ az group deployment create \
   --resource-group AppGateway_Dev \
   --template-uri https://raw.githubusercontent.com/oYPIo/ARMTemplatesLabs/test/AppGateway/azuredeploy.json \
   --parameters azuredeploy.parameters.dev.json
+
+
+Check VM Ips:
+
+az vm list \
+    --resource-group AppGateway_Dev \
+    --query "[*].{Name:name, PrivateIP:privateIps, PublicIP:publicIps}" \
+    --show-details \
+    --output table

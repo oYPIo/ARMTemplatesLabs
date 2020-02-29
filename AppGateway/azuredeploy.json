@@ -21,6 +21,12 @@
           "description": "Specifies a username for the Virtual Machine."
         }
       },
+      "adminPassword": {
+         "type": "securestring",
+        "metadata": {
+          "description": "Specifies a password for the Virtual Machine."
+        } 
+      },
       "adminPublicKey": {
         "type": "string",
         "metadata": {
@@ -138,6 +144,7 @@
           "osProfile": {
             "computerName": "[variables('vmName')]",
             "adminUsername": "[parameters('adminUsername')]",
+            "adminPassword": "[parameters('adminPassword')]",
             "linuxConfiguration": {
               "disablePasswordAuthentication": true,
               "ssh": {
