@@ -3,7 +3,7 @@
     "contentVersion": "1.0.0.0",
     "parameters": {
       "projectName":{
-        "value": "AG_Project"
+        "value": "AGProject"
       },
       "adminUsername": {
         "value": "YPI"
