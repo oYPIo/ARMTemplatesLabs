@@ -17,3 +17,8 @@ az vm list \
     --query "[*].{Name:name, PrivateIP:privateIps, PublicIP:publicIps}" \
     --show-details \
     --output table
+
+
+Connect to VM:
+
+ssh -o StrictHostKeyChecking=no azureuser@<SalesVM public IP>
