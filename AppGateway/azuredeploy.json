@@ -35,14 +35,16 @@
       }
     },
     "variables": {
-      "vNetName": "[concat(parameters('projectName'), '-vnet')]",
+      "vNetName": "vehicleAppVnet",
       "vNetAddressPrefixes": "10.0.0.0/16",
-      "vNetSubnetName": "default",
-      "vNetSubnetAddressPrefix": "10.0.0.0/24",
+      "vNetSubnetName": "webServerSubnet",
+      "vNetSubnetAddressPrefix": "10.0.1.0/24",
       "vmName": "[concat(parameters('projectName'), '-vm')]",
+      "vmSize": "Standard_B1s",
       "publicIPAddressName": "[concat(parameters('projectName'), '-ip')]",
       "networkInterfaceName": "[concat(parameters('projectName'), '-nic')]",
-      "networkSecurityGroupName": "[concat(parameters('projectName'), '-nsg')]"
+      "networkSecurityGroupName": "[concat(parameters('projectName'), '-nsg')]",
+      "numberOfInstances": 2
     },
     "resources": [
       {
@@ -72,8 +74,12 @@
       {
         "type": "Microsoft.Network/publicIPAddresses",
         "apiVersion": "2018-11-01",
-        "name": "[variables('publicIPAddressName')]",
+        "name": "[concat(variables('publicIPAddressName'), copyIndex(1))]",
         "location": "[parameters('location')]",
+        "copy": {
+            "name": "publicIPAdressCopy",
+            "count": "[variables('numberOfInstances')]"
+        },
         "properties": {
           "publicIPAllocationMethod": "Dynamic"
         },
@@ -105,10 +111,14 @@
       {
         "type": "Microsoft.Network/networkInterfaces",
         "apiVersion": "2018-11-01",
-        "name": "[variables('networkInterfaceName')]",
+        "name": "[concat(variables('networkInterfaceName'), copyIndex(1))]",
         "location": "[parameters('location')]",
+        "copy": {
+            "name": "networkInterfaceCopy",
+            "count": "[variables('numberOfInstances')]"
+        },
         "dependsOn": [
-          "[resourceId('Microsoft.Network/publicIPAddresses', variables('publicIPAddressName'))]",
+          "publicIPAdressCopy",
           "[resourceId('Microsoft.Network/virtualNetworks', variables('vNetName'))]",
           "[resourceId('Microsoft.Network/networkSecurityGroups', variables('networkSecurityGroupName'))]"
         ],
@@ -119,7 +129,7 @@
               "properties": {
                 "privateIPAllocationMethod": "Dynamic",
                 "publicIPAddress": {
-                  "id": "[resourceId('Microsoft.Network/publicIPAddresses', variables('publicIPAddressName'))]"
+                  "id": "[resourceId('Microsoft.Network/publicIPAddresses', concat(variables('publicIPAddressName'), copyIndex(1)))]"
                 },
                 "subnet": {
                   "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vNetName'), variables('vNetSubnetName'))]"
@@ -132,17 +142,21 @@
       {
         "type": "Microsoft.Compute/virtualMachines",
         "apiVersion": "2018-10-01",
-        "name": "[variables('vmName')]",
+        "name": "[concat(variables('vmName'),copyIndex(1))]",
         "location": "[parameters('location')]",
+        "copy": {
+            "name": "vmCopy",
+            "count": "[variables('numberOfInstances')]"
+        },
         "dependsOn": [
-          "[resourceId('Microsoft.Network/networkInterfaces', variables('networkInterfaceName'))]"
+          "networkInterfaceCopy"
         ],
         "properties": {
           "hardwareProfile": {
-            "vmSize": "Standard_D2s_v3"
+            "vmSize": "[variables('vmSize')]"
           },
           "osProfile": {
-            "computerName": "[variables('vmName')]",
+            "computerName": "[concat(variables('vmName'), copyIndex(1))]",
             "adminUsername": "[parameters('adminUsername')]",
             "adminPassword": "[parameters('adminPassword')]",
             "linuxConfiguration": {
@@ -171,7 +185,7 @@
           "networkProfile": {
             "networkInterfaces": [
               {
-                "id": "[resourceId('Microsoft.Network/networkInterfaces', variables('networkInterfaceName'))]"
+                "id": "[resourceId('Microsoft.Network/networkInterfaces', concat(variables('networkInterfaceName'), copyIndex(1)))]"
               }
             ]
           }
