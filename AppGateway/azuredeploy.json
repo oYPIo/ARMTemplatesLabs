@@ -32,7 +32,18 @@
         "metadata": {
           "description": "Specifies the SSH rsa public key file as a string. Use \"ssh-keygen -t rsa -b 2048\" to generate your SSH key pairs."
         }
-      }
+      },
+      "authenticationType": {
+            "type": "string",
+            "defaultValue": "sshPublicKey",
+            "allowedValues": [
+                "sshPublicKey",
+                "password"
+            ],
+            "metadata": {
+                "description": "Type of authentication to use on the Virtual Machine. SSH key is recommended."
+            }
+        }
     },
     "variables": {
       "vNetName": "vehicleAppVnet",
@@ -44,7 +55,18 @@
       "publicIPAddressName": "[concat(parameters('projectName'), '-ip')]",
       "networkInterfaceName": "[concat(parameters('projectName'), '-nic')]",
       "networkSecurityGroupName": "[concat(parameters('projectName'), '-nsg')]",
-      "numberOfInstances": 2
+      "numberOfInstances": 2,
+      "linuxConfiguration": {
+              "disablePasswordAuthentication": false,
+              "ssh": {
+                "publicKeys": [
+                  {
+                    "path": "[concat('/home/', parameters('adminUsername'), '/.ssh/authorized_keys')]",
+                    "keyData": "[parameters('adminPublicKey')]"
+                  }
+                ]
+              }
+            }
     },
     "resources": [
       {
@@ -158,7 +180,8 @@
           "osProfile": {
             "computerName": "[concat(variables('vmName'), copyIndex(1))]",
             "adminUsername": "[parameters('adminUsername')]",
-            "adminPassword": "[parameters('adminPassword')]"
+            "adminPassword": "[parameters('adminPassword')]",
+            "linuxConfiguration": "[if(equals(parameters('authenticationType'), 'password'), json('null'), variables('linuxConfiguration'))]"
           },
           "storageProfile": {
             "imageReference": {
