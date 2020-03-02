@@ -13,6 +13,9 @@
       },
       "adminPublicKey": {
         "value": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCbofC1EKLM8MTc2+lsB01SNU/HUVhknhKKITbqvkO9a2YqYuVgUvxGhDu+VdLJjqImiqonpOyNb6ylIUZ/qM6ufigRVo6LRN80HNMruXI9orfV2qyJSkVTVK7R9mxRVlkDchaDPhC2VJqrXm3retFjPwL6VMMnmxDUIO7Oo24hQyGUimT43q97/0vI0Xsx7DtXkup66gg2+IoMAOZwBgVp/9+I//kRlugxcQw5pTiFAwTRVQD4Yrx8xQaDDNnmHqlAWDCb2skugnz9jCd+J/dXMKOMw06CgpvGkuf6cwDGizcxsUMpKcVL6B7dRHlSsYbxQCrITIUjnl+GwyZlfR1T yaroslav@cc-95e6c602-7cb67f7bd7-pdp4s"
+      },
+      "customData": {
+        "value": "vmconfig.sh"
       }
     }
   }
