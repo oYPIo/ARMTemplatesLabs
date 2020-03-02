@@ -16,6 +16,9 @@
       },
       "customData": {
         "value": "vmconfig.sh"
+      },
+      "branch": {
+        "value": "appService"
       }
     }
   }

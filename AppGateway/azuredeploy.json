@@ -50,7 +50,28 @@
       "metadata": {
         "description": "String passed down to the Virtual Machine."
       }
-    }
+    },
+    "linuxFxVersion": {
+      "type": "string",
+      "defaultValue": "php|7.0",
+      "metadata": {
+        "description": "The Runtime stack of current web app"
+      }
+    },
+    "repoURL": {
+            "type": "string",
+            "defaultValue": "https://github.com/MicrosoftDocs/mslearn-load-balance-web-traffic-with-application-gateway",
+            "metadata": {
+                "description": "The URL for the GitHub repository that contains the project to deploy."
+            }
+        },
+        "branch": {
+            "type": "string",
+            "defaultValue": "master",
+            "metadata": {
+                "description": "The branch of the GitHub repository to use."
+            }
+        }
 
   },
   "variables": {
@@ -74,7 +95,10 @@
           }
         ]
       }
-    }
+    },
+    "appServicePlanName": "vehicleAppServicePlan",
+    "appServicePlanSKU": "S1",
+    "webAppPortalName": "licenserenewal$RANDOM"
   },
   "resources": [
     {
@@ -211,6 +235,51 @@
           ]
         }
       }
+    },
+    {
+      "type": "Microsoft.Web/serverfarms",
+      "apiVersion": "2018-02-01",
+      "name": "[variables('appServicePlanName')]",
+      "location": "[parameters('location')]",
+      "sku": {
+        "name": "[variables('appServicePlanSKU')]"
+      },
+      "kind": "linux",
+      "properties": {
+        "reserved": true
+      }
+    },
+    {
+      "type": "Microsoft.Web/sites",
+      "apiVersion": "2018-11-01",
+      "name": "[variables('webAppPortalName')]",
+      "location": "[parameters('location')]",
+      "kind": "app",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/serverfarms', variables('appServicePlanName'))]"
+      ],
+      "properties": {
+        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('appServicePlanName'))]",
+        "siteConfig": {
+          "linuxFxVersion": "[parameters('linuxFxVersion')]"
+        }
+      },
+      "resources": [
+                {
+                    "type": "sourcecontrols",
+                    "apiVersion": "2018-02-01",
+                    "name": "web",
+                    "location": "[parameters('location')]",
+                    "dependsOn": [
+                        "[resourceId('Microsoft.Web/sites', variables('webAppPortalName'))]"
+                    ],
+                    "properties": {
+                        "repoUrl": "[parameters('repoURL')]",
+                        "branch": "[parameters('branch')]",
+                        "isManualIntegration": true
+                    }
+                }
+            ]
     }
   ],
   "outputs": {
