@@ -98,7 +98,13 @@
     },
     "appServicePlanName": "vehicleAppServicePlan",
     "appServicePlanSKU": "S1",
-    "webAppPortalName": "licenserenewal$RANDOM"
+    "webAppPortalName": {
+      "type": "string",
+           "defaultValue": "[concat('WebApp-', uniqueString(resourceGroup().id))]",
+            "metadata": {
+                "description": "The name of you Web Site."
+            }
+    }
   },
   "resources": [
     {
