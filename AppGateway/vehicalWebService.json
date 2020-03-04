@@ -244,8 +244,8 @@
         "vmIPs": {
             "type": "array",
             "value": [
-                "[resourceId('Microsoft.Network/publicIPAddresses', concat(variables('publicIPAddressName'), '1'))]",
-                "[resourceId('Microsoft.Network/publicIPAddresses', concat(variables('publicIPAddressName'), '2'))]"
+                "[reference(resourceId('Microsoft.Network/publicIPAddresses', concat(variables('publicIPAddressName'), '1'))).ipConfigurations[0].properties.privateIPAddress]",
+                "[reference(resourceId('Microsoft.Network/publicIPAddresses', concat(variables('publicIPAddressName'), '2'))).ipConfigurations[0].properties.privateIPAddress]"
             ]
         }
     }
