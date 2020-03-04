@@ -79,19 +79,7 @@
                 "description": "The name of you Web Site."
             }
         },
-        "networkSecurityGroupName": {
-            "type": "string"
-        },
-        "networkSecurityGroupID": {
-            "type": "string"
-        },
-        "vNetName": {
-            "type": "string"
-        },
-        "vNetID":{
-            "type": "string"
-        },
-        "vNetSubnetName": {
+        "vNetSubnetID": {
             "type": "string"
         },    
         "numberOfInstances": {
@@ -144,9 +132,7 @@
                 "count": "[parameters('numberOfInstances')]"
             },
             "dependsOn": [
-                "publicIPAdressCopy",
-                "[reference(parameters('vNetID'), '2018-11-01')]",
-                "[reference(parameters('networkSecurityGroupID'), '2018-11-01')]"
+                "publicIPAdressCopy"
             ],
             "properties": {
                 "ipConfigurations": [
@@ -158,7 +144,7 @@
                                 "id": "[resourceId('Microsoft.Network/publicIPAddresses', concat(variables('publicIPAddressName'), copyIndex(1)))]"
                             },
                             "subnet": {
-                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('vNetName'), parameters('vNetSubnetName'))]"
+                                "id": "[reference(parameters('vNetSubnetID'), '2018-11-01')]"
                             }
                         }
                     }

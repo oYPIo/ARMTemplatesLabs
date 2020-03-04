@@ -175,20 +175,11 @@
           "branch": {
             "value": "appService"
           },
-          "networkSecurityGroupName": {
-            "value": "[variables('networkSecurityGroupName')]"
-          },
-          "networkSecurityGroupID": {
-            "value": "[resourceID('Microsoft.Network/networkSecurityGroups',variables('networkSecurityGroupName'))]"
-          },
-          "vNetName": {
-            "value": "[variables('vNetName')]"
-          },
-          "vNetID": {
-            "value": "[resourceID('Microsoft.Network/virtualNetworks',variables('vNetName'))]"
-          },
           "vNetSubnetName": {
             "value": "[variables('vNetSubnetName')]"
+          },
+          "vNetSubnetID": {
+            "value": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vNetName'), variables('vNetSubnetName'))]"
           },
           "numberOfInstances": {
             "value": 2
