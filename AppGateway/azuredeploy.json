@@ -64,7 +64,7 @@
     "vNetSubnetName": "webServerSubnet",
     "vNetSubnetAddressPrefix": "10.0.1.0/24",
     "WebServiceTemplateName":  "vehicalWebService",
-    "WebServiceTemplateURI":  "[uri(parameters('deploymentURL'), 'serverTemplate.json')]",
+    "WebServiceTemplateURI":  "[uri(parameters('deploymentURL'), variables('WebServiceTemplateName'))]",
     "vNetAppGatewaySubnetName": "appGatewaySubnet",
     "vNetAppGatewaySubnetAddressPrefix": "10.0.0.0/24",
     "publicAppGatewayIPAddress": "appGatewayPublicIp",
