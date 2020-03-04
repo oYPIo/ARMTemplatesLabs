@@ -86,9 +86,12 @@
     "vNetAddressPrefixes": "10.0.0.0/16",
     "vNetSubnetName": "webServerSubnet",
     "vNetSubnetAddressPrefix": "10.0.1.0/24",
+    "vNetAppGatewaySubnet": "appGatewaySubnet",
+    "vNetAppGatewaySubnetAddressPrefix": "10.0.1.0/24",
     "vmName": "[concat(parameters('projectName'), '-vm')]",
     "vmSize": "Standard_B1s",
     "publicIPAddressName": "[concat(parameters('projectName'), '-ip')]",
+    "publicAppGatewayIPAddress": "appGatewayPublicIp",
     "networkInterfaceName": "[concat(parameters('projectName'), '-nic')]",
     "networkSecurityGroupName": "[concat(parameters('projectName'), '-nsg')]",
     "numberOfInstances": 2,
@@ -134,6 +137,21 @@
     {
       "type": "Microsoft.Network/publicIPAddresses",
       "apiVersion": "2018-11-01",
+      "name": "[variables('publicAppGatewayIPAddress')]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "publicIPAllocationMethod": "Dynamic",
+        "dnsSettings": {
+          "domainNameLabel": "[concat('vehicleapp',uniqueString(resourceGroup().id))]"
+        }
+      },
+      "sku": {
+        "name": "Standard"
+      }
+    },
+    {
+      "type": "Microsoft.Network/publicIPAddresses",
+      "apiVersion": "2018-11-01",
       "name": "[concat(variables('publicIPAddressName'), copyIndex(1))]",
       "location": "[parameters('location')]",
       "copy": {
@@ -163,6 +181,12 @@
             "name": "[variables('vNetSubnetName')]",
             "properties": {
               "addressPrefix": "[variables('vNetSubnetAddressPrefix')]"
+            }
+          },
+          {
+            "name": "[variables('vNetAppGatewaySubnet')]",
+            "properties": {
+              "addressPrefix": "[variables('vNetAppGatewaySubnetAddressPrefix')]"
             }
           }
         ]
