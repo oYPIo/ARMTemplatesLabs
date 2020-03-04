@@ -78,6 +78,33 @@
       "metadata": {
         "description": "The name of you Web Site."
       }
+    },
+    "WebServiceTemplateName": {
+      "type": "string",
+      "defaultValue": "vehicalWebService"
+    },
+    "WebServiceTemplateURI": {
+      "type": "string",
+      "defaultValue": ""
+    }
+    "applicationGatewaySize": {
+      "type": "string",
+      "allowedValues": [
+        "Standard_Small",
+        "Standard_Medium",
+        "Standard_Large"
+      ],
+      "defaultValue": "Standard_Small",
+      "metadata": {
+        "description": "application gateway size"
+      }
+    },
+    "frontendPort": {
+      "type": "int",
+      "defaultValue": 8080,
+      "metadata": {
+        "description": "application gateway front end port"
+      }
     }
 
   },
@@ -86,7 +113,7 @@
     "vNetAddressPrefixes": "10.0.0.0/16",
     "vNetSubnetName": "webServerSubnet",
     "vNetSubnetAddressPrefix": "10.0.1.0/24",
-    "vNetAppGatewaySubnet": "appGatewaySubnet",
+    "vNetAppGatewaySubnetName": "appGatewaySubnet",
     "vNetAppGatewaySubnetAddressPrefix": "10.0.0.0/24",
     "vmName": "[concat(parameters('projectName'), '-vm')]",
     "vmSize": "Standard_B1s",
@@ -107,7 +134,8 @@
       }
     },
     "appServicePlanName": "vehicleAppServicePlan",
-    "appServicePlanSKU": "S1"
+    "appServicePlanSKU": "S1",
+    "applicationGatewayName": "vehicleAppGateway"
   },
   "resources": [
     {
@@ -150,22 +178,6 @@
       }
     },
     {
-      "type": "Microsoft.Network/publicIPAddresses",
-      "apiVersion": "2018-11-01",
-      "name": "[concat(variables('publicIPAddressName'), copyIndex(1))]",
-      "location": "[parameters('location')]",
-      "copy": {
-        "name": "publicIPAdressCopy",
-        "count": "[variables('numberOfInstances')]"
-      },
-      "properties": {
-        "publicIPAllocationMethod": "Dynamic"
-      },
-      "sku": {
-        "name": "Basic"
-      }
-    },
-    {
       "type": "Microsoft.Network/virtualNetworks",
       "apiVersion": "2018-11-01",
       "name": "[variables('vNetName')]",
@@ -184,7 +196,7 @@
             }
           },
           {
-            "name": "[variables('vNetAppGatewaySubnet')]",
+            "name": "[variables('vNetAppGatewaySubnetName')]",
             "properties": {
               "addressPrefix": "[variables('vNetAppGatewaySubnetAddressPrefix')]"
             }
@@ -193,123 +205,119 @@
       }
     },
     {
-      "type": "Microsoft.Network/networkInterfaces",
-      "apiVersion": "2018-11-01",
-      "name": "[concat(variables('networkInterfaceName'), copyIndex(1))]",
+      "name": "[parameters('WebServiceTemplateName')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2018-05-01",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[variables('serverTemplateURI')]"
+        },
+        "parameters": {
+          "username": {
+            "value": "[parameters('adminUsername')]"
+          },
+          "password": {
+            "value": "[parameters('adminPassword')]"
+          }
+        }
+      }
+    },
+    {
+      "apiVersion": "2017-06-01",
+      "name": "[variables('applicationGatewayName')]",
+      "type": "Microsoft.Network/applicationGateways",
       "location": "[parameters('location')]",
-      "copy": {
-        "name": "networkInterfaceCopy",
-        "count": "[variables('numberOfInstances')]"
-      },
       "dependsOn": [
-        "publicIPAdressCopy",
-        "[resourceId('Microsoft.Network/virtualNetworks', variables('vNetName'))]",
-        "[resourceId('Microsoft.Network/networkSecurityGroups', variables('networkSecurityGroupName'))]"
+        "[concat('Microsoft.Network/virtualNetworks/', variables('vNetName'))]"
       ],
       "properties": {
-        "ipConfigurations": [
+        "sku": {
+          "name": "[parameters('applicationGatewaySize')]",
+          "tier": "Standard",
+          "capacity": "[variables('numberOfInstances')]"
+        },
+        "gatewayIPConfigurations": [
           {
-            "name": "ipconfig1",
+            "name": "appGatewayIpConfig",
             "properties": {
-              "privateIPAllocationMethod": "Dynamic",
-              "publicIPAddress": {
-                "id": "[resourceId('Microsoft.Network/publicIPAddresses', concat(variables('publicIPAddressName'), copyIndex(1)))]"
-              },
               "subnet": {
-                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vNetName'), variables('vNetSubnetName'))]"
+                "id": "[variables('vNetAppGatewaySubnetName')]"
+              }
+            }
+          }
+        ],
+        "frontendIPConfigurations": [
+          {
+            "name": "appGatewayFrontendIP",
+            "properties": {
+              "subnet": {
+                "id": "[variables('vNetAppGatewaySubnetName')]"
+              }
+            }
+          }
+        ],
+        "frontendPorts": [
+          {
+            "name": "appGatewayFrontendPort",
+            "properties": {
+              "Port": "[parameters('frontendPort')]"
+            }
+          }
+        ],
+        "backendAddressPools": [
+          {
+            "name": "appGatewayBackendPool",
+            "properties": {
+              "BackendAddresses": [
+                ""
+              ]
+            }
+          }
+        ],
+        "backendHttpSettingsCollection": [
+          {
+            "name": "appGatewayBackendHttpSettings",
+            "properties": {
+              "Port": "[parameters('backendPort')]",
+              "Protocol": "Http",
+              "CookieBasedAffinity": "[parameters('cookieBasedAffinity')]"
+            }
+          }
+        ],
+        "httpListeners": [
+          {
+            "name": "appGatewayHttpListener",
+            "properties": {
+              "FrontendIpConfiguration": {
+                "Id": "[concat(resourceId('Microsoft.Network/applicationGateways', parameters('applicationGatewayName')), '/frontendIPConfigurations/appGatewayFrontendIP')]"
+              },
+              "FrontendPort": {
+                "Id": "[concat(resourceId('Microsoft.Network/applicationGateways', parameters('applicationGatewayName')), '/frontendPorts/appGatewayFrontendPort')]"
+              },
+              "Protocol": "Http",
+              "SslCertificate": null
+            }
+          }
+        ],
+        "requestRoutingRules": [
+          {
+            "Name": "rule1",
+            "properties": {
+              "RuleType": "Basic",
+              "httpListener": {
+                "id": "[concat(resourceId('Microsoft.Network/applicationGateways', parameters('applicationGatewayName')), '/httpListeners/appGatewayHttpListener')]"
+              },
+              "backendAddressPool": {
+                "id": "[concat(resourceId('Microsoft.Network/applicationGateways', parameters('applicationGatewayName')), '/backendAddressPools/appGatewayBackendPool')]"
+              },
+              "backendHttpSettings": {
+                "id": "[concat(resourceId('Microsoft.Network/applicationGateways', parameters('applicationGatewayName')), '/backendHttpSettingsCollection/appGatewayBackendHttpSettings')]"
               }
             }
           }
         ]
       }
-    },
-    {
-      "type": "Microsoft.Compute/virtualMachines",
-      "apiVersion": "2018-10-01",
-      "name": "[concat(variables('vmName'),copyIndex(1))]",
-      "location": "[parameters('location')]",
-      "copy": {
-        "name": "vmCopy",
-        "count": "[variables('numberOfInstances')]"
-      },
-      "dependsOn": [
-        "networkInterfaceCopy"
-      ],
-      "properties": {
-        "hardwareProfile": {
-          "vmSize": "[variables('vmSize')]"
-        },
-        "osProfile": {
-          "computerName": "[concat(variables('vmName'), copyIndex(1))]",
-          "adminUsername": "[parameters('adminUsername')]",
-          "adminPassword": "[parameters('adminPassword')]",
-          "customData": "[base64(parameters('customData'))]",
-          "linuxConfiguration": "[if(equals(parameters('authenticationType'), 'password'), json('null'), variables('linuxConfiguration'))]"
-        },
-        "storageProfile": {
-          "imageReference": {
-            "publisher": "Canonical",
-            "offer": "UbuntuServer",
-            "sku": "18.04-LTS",
-            "version": "latest"
-          },
-          "osDisk": {
-            "createOption": "fromImage"
-          }
-        },
-        "networkProfile": {
-          "networkInterfaces": [
-            {
-              "id": "[resourceId('Microsoft.Network/networkInterfaces', concat(variables('networkInterfaceName'), copyIndex(1)))]"
-            }
-          ]
-        }
-      }
-    },
-    {
-      "type": "Microsoft.Web/serverfarms",
-      "apiVersion": "2018-02-01",
-      "name": "[variables('appServicePlanName')]",
-      "location": "[parameters('location')]",
-      "sku": {
-        "name": "[variables('appServicePlanSKU')]"
-      },
-      "kind": "linux",
-      "properties": {
-        "reserved": true
-      }
-    },
-    {
-      "type": "Microsoft.Web/sites",
-      "apiVersion": "2018-11-01",
-      "name": "[parameters('webAppPortalName')]",
-      "location": "[parameters('location')]",
-      "kind": "app",
-      "dependsOn": [
-        "[resourceId('Microsoft.Web/serverfarms', variables('appServicePlanName'))]"
-      ],
-      "properties": {
-        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('appServicePlanName'))]",
-        "siteConfig": {
-          "linuxFxVersion": "[parameters('linuxFxVersion')]"
-        }
-      },
-      "resources": [
-        {
-          "type": "sourcecontrols",
-          "apiVersion": "2018-02-01",
-          "name": "web",
-          "location": "[parameters('location')]",
-          "dependsOn": [
-            "[resourceId('Microsoft.Web/sites', parameters('webAppPortalName'))]"
-          ],
-          "properties": {
-            "repoUrl": "[parameters('repoURL')]",
-            "branch": "[parameters('branch')]",
-            "isManualIntegration": true
-          }
-        }
-      ]
     }
   ],
   "outputs": {
