@@ -293,9 +293,6 @@
           {
             "name": "urlPathMap",
             "properties": {
-              "defaultBackendAddressPool": {
-                "id": "[concat(variables('applicationGatewayID'), '/backendAddressPools/appGatewayBackendPoolDefault')]"
-              },
               "defaultBackendHttpSettings": {
                 "id": "[concat(variables('applicationGatewayID'), '/backendHttpSettingsCollection/appGatewayBackendHttpSettings')]"
               },
