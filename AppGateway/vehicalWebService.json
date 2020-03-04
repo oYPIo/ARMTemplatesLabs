@@ -241,9 +241,11 @@
         }
     ],
     "outputs": {
-        "adminUsername": {
-            "type": "string",
-            "value": "[parameters('adminUsername')]"
+        "vmIPs": {
+            "type": "array",
+            "value": [
+                "[reference(resourceId('Microsoft.Compute/virtualMachines', concat(variables('vmName'), '1'))).IpAddress]"
+            ]
         }
     }
 }
