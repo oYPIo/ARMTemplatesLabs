@@ -37,23 +37,33 @@
         "description": "Specifies the SSH rsa public key file as a string. Use \"ssh-keygen -t rsa -b 2048\" to generate your SSH key pairs."
       }
     },
-    "applicationGatewaySize": {
+    "applicationGatewaySkuName": {
       "type": "string",
-      "allowedValues": [
-        "Standard_Small",
-        "Standard_Medium",
-        "Standard_Large"
-      ],
-      "defaultValue": "Standard_Small",
-      "metadata": {
-        "description": "application gateway size"
-      }
+      "defaultValue": "WAF_v2"
     },
     "frontendPort": {
       "type": "int",
-      "defaultValue": 8080,
+      "defaultValue": 80,
       "metadata": {
         "description": "application gateway front end port"
+      }
+    },
+    "backendPort": {
+      "type": "int",
+      "defaultValue": 80,
+      "metadata": {
+        "description": "application gateway back end port"
+      }
+    },
+    "cookieBasedAffinity": {
+      "type": "string",
+      "allowedValues": [
+        "Enabled",
+        "Disabled"
+      ],
+      "defaultValue": "Disabled",
+      "metadata": {
+        "description": "cookie based affinity"
       }
     }
 
@@ -71,7 +81,11 @@
     "networkSecurityGroupName": "[concat(parameters('projectName'), '-nsg')]",
     "appServicePlanName": "vehicleAppServicePlan",
     "appServicePlanSKU": "S1",
-    "applicationGatewayName": "vehicleAppGateway"
+    "applicationGatewayName": "vehicleAppGateway",
+    "numberOfInstances": 2,
+    "webAppPortalName": "[concat('licenserenewal', uniqueString(resourceGroup().id))]",
+    "applicationGatewayID": "[resourceId('Microsoft.Network/applicationGateways',variables('applicationGatewayName'))]"
+
   },
   "resources": [
     {
@@ -179,9 +193,179 @@
             "value": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vNetName'), variables('vNetSubnetName'))]"
           },
           "numberOfInstances": {
-            "value": 2
+            "value": "[variables('numberOfInstances')]"
+          },
+          "webAppPortalName": {
+            "value": "[variables('webAppPortalName')]"
           }
         }
+      }
+    },
+    {
+      "apiVersion": "2017-06-01",
+      "name": "[variables('applicationGatewayName')]",
+      "type": "Microsoft.Network/applicationGateways",
+      "location": "[parameters('location')]",
+      "dependsOn": [
+        "[concat('Microsoft.Network/virtualNetworks/', variables('vNetName'))]"
+      ],
+      "properties": {
+        "sku": {
+          "name": "[parameters('applicationGatewaySkuName')]",
+          "tier": "Standard",
+          "capacity": "[variables('numberOfInstances')]"
+        },
+        "gatewayIPConfigurations": [
+          {
+            "name": "appGatewayIpConfig",
+            "properties": {
+              "subnet": {
+                "id": "[variables('vNetAppGatewaySubnetName')]"
+              }
+            }
+          }
+        ],
+        "frontendIPConfigurations": [
+          {
+            "name": "appGatewayFrontendIP",
+            "properties": {
+              "subnet": {
+                "id": "[variables('vNetAppGatewaySubnetName')]"
+              }
+            }
+          }
+        ],
+        "frontendPorts": [
+          {
+            "name": "port80",
+            "properties": {
+              "Port": "[parameters('frontendPort')]"
+            }
+          }
+        ],
+        "backendAddressPools": [
+          {
+            "name": "vmPool",
+            "properties": {
+              "BackendAddresses": [
+                "[reference(variables('vNetSubnetName')).outputs.vmIPs.value]"
+              ]
+            }
+          },
+          {
+            "name": "appServicePool",
+            "properties": {
+              "BackendAddresses": [
+                "[variables('webAppPortalName')]"
+              ]
+            }
+          }
+        ],
+        "backendHttpSettingsCollection": [
+          {
+            "name": "appGatewayBackendHttpSettings",
+            "properties": {
+              "Port": "[parameters('backendPort')]",
+              "Protocol": "Http",
+              "CookieBasedAffinity": "[parameters('cookieBasedAffinity')]",
+              "probe": {
+                "id": "[concat(variables('applicationGatewayID'), '/probes/customProbe')]"
+              }
+            }
+          }
+        ],
+        "httpListeners": [
+          {
+            "name": "vehicleListener",
+            "properties": {
+              "FrontendIpConfiguration": {
+                "Id": "[concat(resourceId('Microsoft.Network/applicationGateways', variables('applicationGatewayName')), '/frontendIPConfigurations/appGatewayFrontendIP')]"
+              },
+              "FrontendPort": {
+                "Id": "[concat(resourceId('Microsoft.Network/applicationGateways', variables('applicationGatewayName')), '/frontendPorts/port80')]"
+              },
+              "Protocol": "Http",
+              "SslCertificate": null
+            }
+          }
+        ],
+        "urlPathMaps": [
+          {
+            "name": "urlPathMap",
+            "properties": {
+              "defaultBackendAddressPool": {
+                "id": "[concat(variables('applicationGatewayID'), '/backendAddressPools/appGatewayBackendPoolDefault')]"
+              },
+              "defaultBackendHttpSettings": {
+                "id": "[concat(variables('applicationGatewayID'), '/backendHttpSettingsCollection/appGatewayBackendHttpSettings')]"
+              },
+              "pathRules": [
+                {
+                  "name": "pathRule1",
+                  "properties": {
+                    "paths": [
+                      "/VehicleRegistration/*"
+                    ],
+                    "backendAddressPool": {
+                      "id": "[concat(variables('applicationGatewayID'), '/backendAddressPools/vmPool')]"
+                    },
+                    "backendHttpSettings": {
+                      "id": "[concat(variables('applicationGatewayID'), '/backendHttpSettingsCollection/appGatewayBackendHttpSettings')]"
+                    }
+                  }
+                },
+                {
+                  "name": "appServiceUrlPathMap",
+                  "properties": {
+                    "paths": [
+                      "/LicenseRenewal/*"
+                    ],
+                    "backendAddressPool": {
+                      "id": "[concat(variables('applicationGatewayID'), '/backendAddressPools/appServicePool')]"
+                    },
+                    "backendHttpSettings": {
+                      "id": "[concat(variables('applicationGatewayID'), '/backendHttpSettingsCollection/appGatewayBackendHttpSettings')]"
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        ],
+        "requestRoutingRules": [
+          {
+            "Name": "appServiceRule",
+            "properties": {
+              "RuleType": "PathBasedRouting",
+              "httpListener": {
+                "id": "[concat(resourceId('Microsoft.Network/applicationGateways', variables('applicationGatewayName')), '/httpListeners/vehicleListener')]"
+              },
+              "backendAddressPool": {
+                "id": "[concat(resourceId('Microsoft.Network/applicationGateways', variables('applicationGatewayName')), '/backendAddressPools/appServicePool')]"
+              },
+              "backendHttpSettings": {
+                "id": "[concat(resourceId('Microsoft.Network/applicationGateways', variables('applicationGatewayName')), '/backendHttpSettingsCollection/appGatewayBackendHttpSettings')]"
+              },
+              "urlPathMap": {
+                "id": "[concat(variables('applicationGatewayID'), '/urlPathMaps/urlPathMap')]"
+              }
+            }
+          }
+        ],
+        "probes": [
+          {
+            "Name": "customProbe",
+            "properties": {
+              "Protocol": "Http",
+              "Path": "/",
+              "Interval": 15,
+              "Timeout": 10,
+              "UnhealthyThreshold": 3,
+              "MinServers": 0,
+              "PickHostNameFromBackendHttpSettings": true
+            }
+          }
+        ]
       }
     }
   ],
