@@ -145,8 +145,8 @@
             },
             "dependsOn": [
                 "publicIPAdressCopy",
-                "[parameters('vNetID')]",
-                "[parameters('networkSecurityGroupID')]"
+                "[reference(parameters('vNetID'), '2018-11-01')]",
+                "[reference(parameters('networkSecurityGroupID'), '2018-11-01')]"
             ],
             "properties": {
                 "ipConfigurations": [
