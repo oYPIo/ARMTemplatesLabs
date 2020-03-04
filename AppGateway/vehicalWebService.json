@@ -79,41 +79,24 @@
                 "description": "The name of you Web Site."
             }
         },
-        "applicationGatewaySize": {
-            "type": "string",
-            "allowedValues": [
-                "Standard_Small",
-                "Standard_Medium",
-                "Standard_Large"
-            ],
-            "defaultValue": "Standard_Small",
-            "metadata": {
-                "description": "application gateway size"
-            }
+        "networkSecurityGroupName": {
+            "type": "string"
         },
-        "frontendPort": {
-            "type": "int",
-            "defaultValue": 8080,
-            "metadata": {
-                "description": "application gateway front end port"
-            }
+        "vNetName": {
+            "type": "string"
+        },
+        "vNetSubnetName": {
+            "type": "string"
+        },
+        "numberOfInstances": {
+            "type": "int"
         }
-
     },
     "variables": {
-        "vNetName": "vehicleAppVnet",
-        "vNetAddressPrefixes": "10.0.0.0/16",
-        "vNetSubnetName": "webServerSubnet",
-        "vNetSubnetAddressPrefix": "10.0.1.0/24",
-        "vNetAppGatewaySubnetName": "appGatewaySubnet",
-        "vNetAppGatewaySubnetAddressPrefix": "10.0.0.0/24",
         "vmName": "[concat(parameters('projectName'), '-vm')]",
         "vmSize": "Standard_B1s",
         "publicIPAddressName": "[concat(parameters('projectName'), '-ip')]",
-        "publicAppGatewayIPAddress": "appGatewayPublicIp",
         "networkInterfaceName": "[concat(parameters('projectName'), '-nic')]",
-        "networkSecurityGroupName": "[concat(parameters('projectName'), '-nsg')]",
-        "numberOfInstances": 2,
         "linuxConfiguration": {
             "disablePasswordAuthentication": false,
             "ssh": {
@@ -126,34 +109,9 @@
             }
         },
         "appServicePlanName": "vehicleAppServicePlan",
-        "appServicePlanSKU": "S1",
-        "applicationGatewayName": "vehicleAppGateway"
+        "appServicePlanSKU": "S1"
     },
     "resources": [
-        {
-            "type": "Microsoft.Network/networkSecurityGroups",
-            "apiVersion": "2018-11-01",
-            "name": "[variables('networkSecurityGroupName')]",
-            "location": "[parameters('location')]",
-            "properties": {
-                "securityRules": [
-                    {
-                        "name": "ssh_rule",
-                        "properties": {
-                            "description": "Locks inbound down to ssh default port 22.",
-                            "protocol": "Tcp",
-                            "sourcePortRange": "*",
-                            "destinationPortRange": "22",
-                            "sourceAddressPrefix": "*",
-                            "destinationAddressPrefix": "*",
-                            "access": "Allow",
-                            "priority": 123,
-                            "direction": "Inbound"
-                        }
-                    }
-                ]
-            }
-        },
         {
             "type": "Microsoft.Network/publicIPAddresses",
             "apiVersion": "2018-11-01",
@@ -161,7 +119,7 @@
             "location": "[parameters('location')]",
             "copy": {
                 "name": "publicIPAdressCopy",
-                "count": "[variables('numberOfInstances')]"
+                "count": "[parameters('numberOfInstances')]"
             },
             "properties": {
                 "publicIPAllocationMethod": "Dynamic"
@@ -177,12 +135,12 @@
             "location": "[parameters('location')]",
             "copy": {
                 "name": "networkInterfaceCopy",
-                "count": "[variables('numberOfInstances')]"
+                "count": "[parameters('numberOfInstances')]"
             },
             "dependsOn": [
                 "publicIPAdressCopy",
-                "[resourceId('Microsoft.Network/virtualNetworks', variables('vNetName'))]",
-                "[resourceId('Microsoft.Network/networkSecurityGroups', variables('networkSecurityGroupName'))]"
+                "[resourceId('Microsoft.Network/virtualNetworks', parameters('vNetName'))]",
+                "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroupName'))]"
             ],
             "properties": {
                 "ipConfigurations": [
@@ -194,7 +152,7 @@
                                 "id": "[resourceId('Microsoft.Network/publicIPAddresses', concat(variables('publicIPAddressName'), copyIndex(1)))]"
                             },
                             "subnet": {
-                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vNetName'), variables('vNetSubnetName'))]"
+                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('vNetName'), parameters('vNetSubnetName'))]"
                             }
                         }
                     }
@@ -208,7 +166,7 @@
             "location": "[parameters('location')]",
             "copy": {
                 "name": "vmCopy",
-                "count": "[variables('numberOfInstances')]"
+                "count": "[parameters('numberOfInstances')]"
             },
             "dependsOn": [
                 "networkInterfaceCopy"

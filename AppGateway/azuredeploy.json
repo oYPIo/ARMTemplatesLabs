@@ -2,6 +2,10 @@
   "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json",
   "contentVersion": "1.0.0.0",
   "parameters": {
+    "deploymentURL": {
+      "type": "string",
+      "defaultValue": "[deployment().properties.templateLink.uri]"
+    },
     "projectName": {
       "type": "string",
       "metadata": {
@@ -33,60 +37,14 @@
         "description": "Specifies the SSH rsa public key file as a string. Use \"ssh-keygen -t rsa -b 2048\" to generate your SSH key pairs."
       }
     },
-    "authenticationType": {
-      "type": "string",
-      "defaultValue": "password",
-      "allowedValues": [
-        "sshPublicKey",
-        "password"
-      ],
-      "metadata": {
-        "description": "Type of authentication to use on the Virtual Machine. SSH key is recommended."
-      }
-    },
-    "customData": {
-      "type": "string",
-      "defaultValue": "echo customData",
-      "metadata": {
-        "description": "String passed down to the Virtual Machine."
-      }
-    },
-    "linuxFxVersion": {
-      "type": "string",
-      "defaultValue": "php|7.0",
-      "metadata": {
-        "description": "The Runtime stack of current web app"
-      }
-    },
-    "repoURL": {
-      "type": "string",
-      "defaultValue": "https://github.com/MicrosoftDocs/mslearn-load-balance-web-traffic-with-application-gateway",
-      "metadata": {
-        "description": "The URL for the GitHub repository that contains the project to deploy."
-      }
-    },
-    "branch": {
-      "type": "string",
-      "defaultValue": "master",
-      "metadata": {
-        "description": "The branch of the GitHub repository to use."
-      }
-    },
-    "webAppPortalName": {
-      "type": "string",
-      "defaultValue": "[concat('WebApp-', uniqueString(resourceGroup().id))]",
-      "metadata": {
-        "description": "The name of you Web Site."
-      }
-    },
     "WebServiceTemplateName": {
       "type": "string",
       "defaultValue": "vehicalWebService"
     },
     "WebServiceTemplateURI": {
       "type": "string",
-      "defaultValue": ""
-    }
+      "defaultValue": "[uri(parameters('deploymentURL'), 'serverTemplate.json')]"
+    },
     "applicationGatewaySize": {
       "type": "string",
       "allowedValues": [
@@ -115,24 +73,8 @@
     "vNetSubnetAddressPrefix": "10.0.1.0/24",
     "vNetAppGatewaySubnetName": "appGatewaySubnet",
     "vNetAppGatewaySubnetAddressPrefix": "10.0.0.0/24",
-    "vmName": "[concat(parameters('projectName'), '-vm')]",
-    "vmSize": "Standard_B1s",
-    "publicIPAddressName": "[concat(parameters('projectName'), '-ip')]",
     "publicAppGatewayIPAddress": "appGatewayPublicIp",
-    "networkInterfaceName": "[concat(parameters('projectName'), '-nic')]",
     "networkSecurityGroupName": "[concat(parameters('projectName'), '-nsg')]",
-    "numberOfInstances": 2,
-    "linuxConfiguration": {
-      "disablePasswordAuthentication": false,
-      "ssh": {
-        "publicKeys": [
-          {
-            "path": "[concat('/home/', parameters('adminUsername'), '/.ssh/authorized_keys')]",
-            "keyData": "[parameters('adminPublicKey')]"
-          }
-        ]
-      }
-    },
     "appServicePlanName": "vehicleAppServicePlan",
     "appServicePlanSKU": "S1",
     "applicationGatewayName": "vehicleAppGateway"
@@ -208,115 +150,50 @@
       "name": "[parameters('WebServiceTemplateName')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2018-05-01",
+      "dependsOn": [
+        "[resourceID('Microsoft.Network/networkSecurityGroups',variables('networkSecurityGroupName'))]",
+        "[resourceID('Microsoft.Network/virtualNetworks',variables('vNetName'))]"
+      ],
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[variables('serverTemplateURI')]"
+          "uri": "[parameters('WebServiceTemplateURI')]"
         },
         "parameters": {
-          "username": {
+          "projectName": {
+            "value": "[parameters('projectName')]"
+          },
+          "adminUsername": {
             "value": "[parameters('adminUsername')]"
           },
-          "password": {
+          "adminPassword": {
             "value": "[parameters('adminPassword')]"
+          },
+          "location": {
+            "value": "[resourceGroup().location]"
+          },
+          "adminPublicKey": {
+            "value": "[parameters('adminPublicKey')]"
+          },
+          "customData": {
+            "value": "vmconfig.sh"
+          },
+          "branch": {
+            "value": "appService"
+          },
+          "networkSecurityGroupName": {
+            "value": "[variables('networkSecurityGroupName')]"
+          },
+          "vNetName": {
+            "value": "[variables('vNetName')]"
+          },
+          "vNetSubnetName": {
+            "value": "[variables('vNetSubnetName')]"
+          },
+          "numberOfInstances": {
+            "value": 2
           }
         }
-      }
-    },
-    {
-      "apiVersion": "2017-06-01",
-      "name": "[variables('applicationGatewayName')]",
-      "type": "Microsoft.Network/applicationGateways",
-      "location": "[parameters('location')]",
-      "dependsOn": [
-        "[concat('Microsoft.Network/virtualNetworks/', variables('vNetName'))]"
-      ],
-      "properties": {
-        "sku": {
-          "name": "[parameters('applicationGatewaySize')]",
-          "tier": "Standard",
-          "capacity": "[variables('numberOfInstances')]"
-        },
-        "gatewayIPConfigurations": [
-          {
-            "name": "appGatewayIpConfig",
-            "properties": {
-              "subnet": {
-                "id": "[variables('vNetAppGatewaySubnetName')]"
-              }
-            }
-          }
-        ],
-        "frontendIPConfigurations": [
-          {
-            "name": "appGatewayFrontendIP",
-            "properties": {
-              "subnet": {
-                "id": "[variables('vNetAppGatewaySubnetName')]"
-              }
-            }
-          }
-        ],
-        "frontendPorts": [
-          {
-            "name": "appGatewayFrontendPort",
-            "properties": {
-              "Port": "[parameters('frontendPort')]"
-            }
-          }
-        ],
-        "backendAddressPools": [
-          {
-            "name": "appGatewayBackendPool",
-            "properties": {
-              "BackendAddresses": [
-                ""
-              ]
-            }
-          }
-        ],
-        "backendHttpSettingsCollection": [
-          {
-            "name": "appGatewayBackendHttpSettings",
-            "properties": {
-              "Port": "[parameters('backendPort')]",
-              "Protocol": "Http",
-              "CookieBasedAffinity": "[parameters('cookieBasedAffinity')]"
-            }
-          }
-        ],
-        "httpListeners": [
-          {
-            "name": "appGatewayHttpListener",
-            "properties": {
-              "FrontendIpConfiguration": {
-                "Id": "[concat(resourceId('Microsoft.Network/applicationGateways', parameters('applicationGatewayName')), '/frontendIPConfigurations/appGatewayFrontendIP')]"
-              },
-              "FrontendPort": {
-                "Id": "[concat(resourceId('Microsoft.Network/applicationGateways', parameters('applicationGatewayName')), '/frontendPorts/appGatewayFrontendPort')]"
-              },
-              "Protocol": "Http",
-              "SslCertificate": null
-            }
-          }
-        ],
-        "requestRoutingRules": [
-          {
-            "Name": "rule1",
-            "properties": {
-              "RuleType": "Basic",
-              "httpListener": {
-                "id": "[concat(resourceId('Microsoft.Network/applicationGateways', parameters('applicationGatewayName')), '/httpListeners/appGatewayHttpListener')]"
-              },
-              "backendAddressPool": {
-                "id": "[concat(resourceId('Microsoft.Network/applicationGateways', parameters('applicationGatewayName')), '/backendAddressPools/appGatewayBackendPool')]"
-              },
-              "backendHttpSettings": {
-                "id": "[concat(resourceId('Microsoft.Network/applicationGateways', parameters('applicationGatewayName')), '/backendHttpSettingsCollection/appGatewayBackendHttpSettings')]"
-              }
-            }
-          }
-        ]
       }
     }
   ],
