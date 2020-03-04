@@ -192,7 +192,7 @@
     },
     "sadas": {
       "type": "array",
-      "value": "[reference(variables('WebServiceTemplateName')).outputs.resourceID.value]"
+      "value": "[reference(variables('WebServiceTemplateName')).outputs.vmIPs.value]"
     }
   }
 }
