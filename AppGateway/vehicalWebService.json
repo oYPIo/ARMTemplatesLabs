@@ -144,7 +144,7 @@
                                 "id": "[resourceId('Microsoft.Network/publicIPAddresses', concat(variables('publicIPAddressName'), copyIndex(1)))]"
                             },
                             "subnet": {
-                                "id": "[reference(parameters('vNetSubnetID'), '2018-11-01').id]"
+                                "id": "[parameters('vNetSubnetID')]"
                             }
                         }
                     }
