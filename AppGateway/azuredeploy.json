@@ -37,14 +37,6 @@
         "description": "Specifies the SSH rsa public key file as a string. Use \"ssh-keygen -t rsa -b 2048\" to generate your SSH key pairs."
       }
     },
-    "WebServiceTemplateName": {
-      "type": "string",
-      "defaultValue": "vehicalWebService"
-    },
-    "WebServiceTemplateURI": {
-      "type": "string",
-      "defaultValue": "[uri(parameters('deploymentURL'), 'serverTemplate.json')]"
-    },
     "applicationGatewaySize": {
       "type": "string",
       "allowedValues": [
@@ -71,6 +63,14 @@
     "vNetAddressPrefixes": "10.0.0.0/16",
     "vNetSubnetName": "webServerSubnet",
     "vNetSubnetAddressPrefix": "10.0.1.0/24",
+    "WebServiceTemplateName": {
+      "type": "string",
+      "defaultValue": "vehicalWebService"
+    },
+    "WebServiceTemplateURI": {
+      "type": "string",
+      "defaultValue": "[uri(parameters('deploymentURL'), 'serverTemplate.json')]"
+    },
     "vNetAppGatewaySubnetName": "appGatewaySubnet",
     "vNetAppGatewaySubnetAddressPrefix": "10.0.0.0/24",
     "publicAppGatewayIPAddress": "appGatewayPublicIp",
@@ -147,7 +147,7 @@
       }
     },
     {
-      "name": "[parameters('WebServiceTemplateName')]",
+      "name": "[variables('WebServiceTemplateName')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2018-05-01",
       "dependsOn": [
@@ -157,7 +157,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[parameters('WebServiceTemplateURI')]"
+          "uri": "[variables('WebServiceTemplateURI')]"
         },
         "parameters": {
           "projectName": {
