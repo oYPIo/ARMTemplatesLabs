@@ -189,6 +189,10 @@
     "adminUsername": {
       "type": "string",
       "value": "[parameters('adminUsername')]"
+    },
+    "sadas": {
+      "type": "array",
+      "value": "[reference(variables('WebServiceTemplateName')).outputs.resourceID.value]"
     }
   }
 }
