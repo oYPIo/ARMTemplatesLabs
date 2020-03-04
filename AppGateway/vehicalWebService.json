@@ -244,8 +244,8 @@
         "vmIPs": {
             "type": "array",
             "value": [
-                "[reference(resourceId('Microsoft.Compute/virtualMachines', concat(variables('vmName'), '1'))).IpAddress]",
-                "[reference(resourceId('Microsoft.Compute/virtualMachines', concat(variables('vmName'), '2'))).IpAddress]"
+                "[resourceId('Microsoft.Network/publicIPAddresses', concat(variables('publicIPAddressName'), '1'))]",
+                "[resourceId('Microsoft.Network/publicIPAddresses', concat(variables('publicIPAddressName'), '2'))]"
             ]
         }
     }
