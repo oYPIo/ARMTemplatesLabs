@@ -82,12 +82,18 @@
         "networkSecurityGroupName": {
             "type": "string"
         },
+        "networkSecurityGroupID": {
+            "type": "string"
+        },
         "vNetName": {
+            "type": "string"
+        },
+        "vNetID":{
             "type": "string"
         },
         "vNetSubnetName": {
             "type": "string"
-        },
+        },    
         "numberOfInstances": {
             "type": "int"
         }
@@ -139,8 +145,8 @@
             },
             "dependsOn": [
                 "publicIPAdressCopy",
-                "[resourceId('Microsoft.Network/virtualNetworks', parameters('vNetName'))]",
-                "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroupName'))]"
+                "[parameters('vNetID')]",
+                "[parameters('networkSecurityGroupID')]"
             ],
             "properties": {
                 "ipConfigurations": [

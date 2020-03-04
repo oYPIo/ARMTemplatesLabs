@@ -63,8 +63,8 @@
     "vNetAddressPrefixes": "10.0.0.0/16",
     "vNetSubnetName": "webServerSubnet",
     "vNetSubnetAddressPrefix": "10.0.1.0/24",
-    "WebServiceTemplateName":  "vehicalWebService",
-    "WebServiceTemplateURI":  "[uri(parameters('deploymentURL'), 'vehicalWebService.json')]",
+    "WebServiceTemplateName": "vehicalWebService",
+    "WebServiceTemplateURI": "[uri(parameters('deploymentURL'), 'vehicalWebService.json')]",
     "vNetAppGatewaySubnetName": "appGatewaySubnet",
     "vNetAppGatewaySubnetAddressPrefix": "10.0.0.0/24",
     "publicAppGatewayIPAddress": "appGatewayPublicIp",
@@ -139,8 +139,63 @@
           }
         ]
       }
+    },
+    {
+      "name": "[variables('WebServiceTemplateName')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2018-05-01",
+      "dependsOn": [
+        "[resourceID('Microsoft.Network/networkSecurityGroups',variables('networkSecurityGroupName'))]",
+        "[resourceID('Microsoft.Network/virtualNetworks',variables('vNetName'))]"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[variables('WebServiceTemplateURI')]"
+        },
+        "parameters": {
+          "projectName": {
+            "value": "[parameters('projectName')]"
+          },
+          "adminUsername": {
+            "value": "[parameters('adminUsername')]"
+          },
+          "adminPassword": {
+            "value": "[parameters('adminPassword')]"
+          },
+          "location": {
+            "value": "[resourceGroup().location]"
+          },
+          "adminPublicKey": {
+            "value": "[parameters('adminPublicKey')]"
+          },
+          "customData": {
+            "value": "vmconfig.sh"
+          },
+          "branch": {
+            "value": "appService"
+          },
+          "networkSecurityGroupName": {
+            "value": "[variables('networkSecurityGroupName')]"
+          },
+          "networkSecurityGroupID": {
+            "value": "[resourceID('Microsoft.Network/networkSecurityGroups',variables('networkSecurityGroupName'))]"
+          },
+          "vNetName": {
+            "value": "[variables('vNetName')]"
+          },
+          "vNetID": {
+            "value": "[resourceID('Microsoft.Network/virtualNetworks',variables('vNetName'))]"
+          },
+          "vNetSubnetName": {
+            "value": "[variables('vNetSubnetName')]"
+          },
+          "numberOfInstances": {
+            "value": 2
+          }
+        }
+      }
     }
-    
   ],
   "outputs": {
     "adminUsername": {
