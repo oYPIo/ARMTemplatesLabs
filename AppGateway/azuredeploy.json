@@ -175,9 +175,6 @@
           "branch": {
             "value": "appService"
           },
-          "vNetSubnetName": {
-            "value": "[variables('vNetSubnetName')]"
-          },
           "vNetSubnetID": {
             "value": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vNetName'), variables('vNetSubnetName'))]"
           },
