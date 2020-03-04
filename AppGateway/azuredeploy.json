@@ -59,19 +59,26 @@
       }
     },
     "repoURL": {
-            "type": "string",
-            "defaultValue": "https://github.com/MicrosoftDocs/mslearn-load-balance-web-traffic-with-application-gateway",
-            "metadata": {
-                "description": "The URL for the GitHub repository that contains the project to deploy."
-            }
-        },
-        "branch": {
-            "type": "string",
-            "defaultValue": "master",
-            "metadata": {
-                "description": "The branch of the GitHub repository to use."
-            }
-        }
+      "type": "string",
+      "defaultValue": "https://github.com/MicrosoftDocs/mslearn-load-balance-web-traffic-with-application-gateway",
+      "metadata": {
+        "description": "The URL for the GitHub repository that contains the project to deploy."
+      }
+    },
+    "branch": {
+      "type": "string",
+      "defaultValue": "master",
+      "metadata": {
+        "description": "The branch of the GitHub repository to use."
+      }
+    },
+    "webAppPortalName": {
+      "type": "string",
+      "defaultValue": "[concat('WebApp-', uniqueString(resourceGroup().id))]",
+      "metadata": {
+        "description": "The name of you Web Site."
+      }
+    }
 
   },
   "variables": {
@@ -97,14 +104,7 @@
       }
     },
     "appServicePlanName": "vehicleAppServicePlan",
-    "appServicePlanSKU": "S1",
-    "webAppPortalName": {
-      "type": "string",
-           "defaultValue": "[concat('WebApp-', uniqueString(resourceGroup().id))]",
-            "metadata": {
-                "description": "The name of you Web Site."
-            }
-    }
+    "appServicePlanSKU": "S1"
   },
   "resources": [
     {
@@ -258,7 +258,7 @@
     {
       "type": "Microsoft.Web/sites",
       "apiVersion": "2018-11-01",
-      "name": "[variables('webAppPortalName')]",
+      "name": "[parameters('webAppPortalName')]",
       "location": "[parameters('location')]",
       "kind": "app",
       "dependsOn": [
@@ -271,21 +271,21 @@
         }
       },
       "resources": [
-                {
-                    "type": "sourcecontrols",
-                    "apiVersion": "2018-02-01",
-                    "name": "web",
-                    "location": "[parameters('location')]",
-                    "dependsOn": [
-                        "[resourceId('Microsoft.Web/sites', variables('webAppPortalName'))]"
-                    ],
-                    "properties": {
-                        "repoUrl": "[parameters('repoURL')]",
-                        "branch": "[parameters('branch')]",
-                        "isManualIntegration": true
-                    }
-                }
-            ]
+        {
+          "type": "sourcecontrols",
+          "apiVersion": "2018-02-01",
+          "name": "web",
+          "location": "[parameters('location')]",
+          "dependsOn": [
+            "[resourceId('Microsoft.Web/sites', parameters('webAppPortalName'))]"
+          ],
+          "properties": {
+            "repoUrl": "[parameters('repoURL')]",
+            "branch": "[parameters('branch')]",
+            "isManualIntegration": true
+          }
+        }
+      ]
     }
   ],
   "outputs": {
