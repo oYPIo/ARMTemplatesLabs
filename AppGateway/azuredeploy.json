@@ -140,7 +140,7 @@
       "name": "[variables('publicAppGatewayIPAddress')]",
       "location": "[parameters('location')]",
       "properties": {
-        "publicIPAllocationMethod": "Dynamic",
+        "publicIPAllocationMethod": "Static",
         "dnsSettings": {
           "domainNameLabel": "[concat('vehicleapp',uniqueString(resourceGroup().id))]"
         }
