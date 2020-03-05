@@ -260,10 +260,10 @@
             "name": "vehicleListener",
             "properties": {
               "FrontendIpConfiguration": {
-                "Id": "[resourceId('Microsoft.Network/applicationGateways/frontendIPConfigurations', variables('applicationGatewayName'), 'appGatewayFrontendIP')]"
+                "Id": "[concat(variables('applicationGatewayID'), '/frontendIPConfigurations/appGatewayFrontendPublicIP')]"
               },
               "FrontendPort": {
-                "Id": "[resourceId('Microsoft.Network/applicationGateways/frontendPorts', variables('applicationGatewayName'), 'port80')]"
+                "Id": "[concat(variables('applicationGatewayID'), '/frontendPorts/port80')]"
               },
               "Protocol": "Http"
             }
