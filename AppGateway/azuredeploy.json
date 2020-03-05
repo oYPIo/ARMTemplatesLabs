@@ -260,13 +260,12 @@
             "name": "vehicleListener",
             "properties": {
               "FrontendIpConfiguration": {
-                "Id": "[concat(resourceId('Microsoft.Network/applicationGateways', variables('applicationGatewayName')), '/frontendIPConfigurations/appGatewayFrontendIP')]"
+                "Id": "[concat(resourceId('Microsoft.Network/applicationGateways/frontendIPConfigurations', variables('applicationGatewayName')), 'appGatewayFrontendIP')]"
               },
               "FrontendPort": {
-                "Id": "[concat(resourceId('Microsoft.Network/applicationGateways', variables('applicationGatewayName')), '/frontendPorts/port80')]"
+                "Id": "[concat(resourceId('Microsoft.Network/applicationGateways/frontendPorts', variables('applicationGatewayName')), 'port80')]"
               },
-              "Protocol": "Http",
-              "SslCertificate": null
+              "Protocol": "Http"
             }
           }
         ],
@@ -358,6 +357,10 @@
     "subRef": {
       "type": "string",
       "value": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vNetName'), variables('vNetSubnetName'))]"
+    },
+    "oneOfVMsIP": {
+      "type": "string",
+      "value": "[reference(variables('WebServiceTemplateName')).outputs.vmIPs.value[0]]"
     }
   }
 }
