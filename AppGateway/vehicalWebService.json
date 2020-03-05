@@ -87,7 +87,7 @@
         }
     },
     "variables": {
-        "vmName": "[concat(parameters('projectName'), '-vm')]",
+        "vmName": "webServer",
         "vmSize": "Standard_B1s",
         "publicIPAddressName": "[concat(parameters('projectName'), '-ip')]",
         "networkInterfaceName": "[concat(parameters('projectName'), '-nic')]",

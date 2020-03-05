@@ -79,8 +79,6 @@
     "vNetAppGatewaySubnetAddressPrefix": "10.0.0.0/24",
     "publicAppGatewayIPAddress": "appGatewayPublicIp",
     "networkSecurityGroupName": "[concat(parameters('projectName'), '-nsg')]",
-    "appServicePlanName": "vehicleAppServicePlan",
-    "appServicePlanSKU": "S1",
     "applicationGatewayName": "vehicleAppGateway",
     "numberOfInstances": 2,
     "webAppPortalName": "[concat('licenserenewal', uniqueString(resourceGroup().id))]",
@@ -202,7 +200,7 @@
       }
     },
     {
-      "apiVersion": "2018-04-01",
+      "apiVersion": "2019-04-01",
       "name": "[variables('applicationGatewayName')]",
       "type": "Microsoft.Network/applicationGateways",
       "location": "[parameters('location')]",
