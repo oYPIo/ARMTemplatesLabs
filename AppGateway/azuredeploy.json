@@ -377,6 +377,10 @@
     "sadas": {
       "type": "array",
       "value": "[reference(variables('WebServiceTemplateName')).outputs.vmIPs.value]"
+    },
+    "subRef": {
+      "type": "string",
+      "value": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vNetName'), variables('vNetSubnetName'))]"
     }
   }
 }
