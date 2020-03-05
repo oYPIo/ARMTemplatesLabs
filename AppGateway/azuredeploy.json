@@ -249,7 +249,12 @@
             "name": "vmPool",
             "properties": {
               "BackendAddresses": [
-                "[reference(variables('vNetSubnetName')).outputs.vmIPs.value]"
+                {
+                  "IpAddress": "[reference(variables('vNetSubnetName')).outputs.vmIPs.value[0]]"
+                },
+                {
+                  "IpAddress": "[reference(variables('vNetSubnetName')).outputs.vmIPs.value[1]]"
+                }
               ]
             }
           },
