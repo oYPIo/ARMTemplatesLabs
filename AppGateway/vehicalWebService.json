@@ -116,7 +116,7 @@
                 "count": "[parameters('numberOfInstances')]"
             },
             "properties": {
-                "publicIPAllocationMethod": "Dynamic"
+                "publicIPAllocationMethod": "Static"
             },
             "sku": {
                 "name": "Basic"
