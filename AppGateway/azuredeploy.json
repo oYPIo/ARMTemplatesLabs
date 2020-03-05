@@ -250,10 +250,10 @@
             "properties": {
               "BackendAddresses": [
                 {
-                  "IpAddress": "[reference(variables('vNetSubnetName')).outputs.vmIPs.value[0]]"
+                  "IpAddress": "[reference(variables('WebServiceTemplateName')).outputs.vmIPs.value[0]]"
                 },
                 {
-                  "IpAddress": "[reference(variables('vNetSubnetName')).outputs.vmIPs.value[1]]"
+                  "IpAddress": "[reference(variables('WebServiceTemplateName')).outputs.vmIPs.value[1]]"
                 }
               ]
             }
