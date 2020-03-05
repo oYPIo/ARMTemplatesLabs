@@ -318,13 +318,13 @@
             "properties": {
               "RuleType": "PathBasedRouting",
               "httpListener": {
-                "id": "[concat(resourceId('Microsoft.Network/applicationGateways', variables('applicationGatewayName')), '/httpListeners/vehicleListener')]"
+                "id": "[concat(variables('applicationGatewayID'), '/httpListeners/vehicleListener')]"
               },
               "backendAddressPool": {
-                "id": "[concat(resourceId('Microsoft.Network/applicationGateways', variables('applicationGatewayName')), '/backendAddressPools/appServicePool')]"
+                "id": "[concat(variables('applicationGatewayID'), '/backendAddressPools/appServicePool')]"
               },
               "backendHttpSettings": {
-                "id": "[concat(resourceId('Microsoft.Network/applicationGateways', variables('applicationGatewayName')), '/backendHttpSettingsCollection/appGatewayBackendHttpSettings')]"
+                "id": "[concat(variables('applicationGatewayID'), '/backendHttpSettingsCollection/appGatewayBackendHttpSettings')]"
               },
               "urlPathMap": {
                 "id": "[concat(variables('applicationGatewayID'), '/urlPathMaps/urlPathMap')]"
