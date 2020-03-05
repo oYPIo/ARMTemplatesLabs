@@ -323,9 +323,6 @@
               "backendAddressPool": {
                 "id": "[concat(variables('applicationGatewayID'), '/backendAddressPools/appServicePool')]"
               },
-              "backendHttpSettings": {
-                "id": "[concat(variables('applicationGatewayID'), '/backendHttpSettingsCollection/appGatewayBackendHttpSettings')]"
-              },
               "urlPathMap": {
                 "id": "[concat(variables('applicationGatewayID'), '/urlPathMaps/urlPathMap')]"
               }
