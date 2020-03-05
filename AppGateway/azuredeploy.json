@@ -78,7 +78,6 @@
     "vNetAppGatewaySubnetName": "appGatewaySubnet",
     "vNetAppGatewaySubnetAddressPrefix": "10.0.0.0/24",
     "publicAppGatewayIPAddress": "appGatewayPublicIp",
-    "networkSecurityGroupName": "[concat(parameters('projectName'), '-nsg')]",
     "applicationGatewayName": "vehicleAppGateway",
     "numberOfInstances": 2,
     "webAppPortalName": "[concat('licenserenewal', uniqueString(resourceGroup().id))]",
@@ -86,30 +85,6 @@
 
   },
   "resources": [
-    {
-      "type": "Microsoft.Network/networkSecurityGroups",
-      "apiVersion": "2018-11-01",
-      "name": "[variables('networkSecurityGroupName')]",
-      "location": "[parameters('location')]",
-      "properties": {
-        "securityRules": [
-          {
-            "name": "AllowAppGwProbes",
-            "properties": {
-              "description": "Allow ports for App Gw probes",
-              "protocol": "Tcp",
-              "sourcePortRange": "*",
-              "destinationPortRange": "65503-65534 ",
-              "sourceAddressPrefix": "*",
-              "destinationAddressPrefix": "*",
-              "access": "Allow",
-              "priority": 103,
-              "direction": "Inbound"
-            }
-          }
-        ]
-      }
-    },
     {
       "type": "Microsoft.Network/publicIPAddresses",
       "apiVersion": "2018-11-01",
@@ -157,7 +132,6 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2018-05-01",
       "dependsOn": [
-        "[resourceId('Microsoft.Network/networkSecurityGroups',variables('networkSecurityGroupName'))]",
         "[resourceId('Microsoft.Network/virtualNetworks', variables('vNetName'))]"
       ],
       "properties": {
