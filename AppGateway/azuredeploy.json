@@ -159,8 +159,8 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2018-05-01",
       "dependsOn": [
-        "[resourceID('Microsoft.Network/networkSecurityGroups',variables('networkSecurityGroupName'))]",
-        "[resourceID('Microsoft.Network/virtualNetworks',variables('vNetName'))]"
+        "[resourceId('Microsoft.Network/networkSecurityGroups',variables('networkSecurityGroupName'))]",
+        "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vNetName'), variables('vNetSubnetName'))]"
       ],
       "properties": {
         "mode": "Incremental",
