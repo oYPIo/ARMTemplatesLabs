@@ -212,7 +212,7 @@
       "properties": {
         "sku": {
           "name": "[parameters('applicationGatewaySkuName')]",
-          "tier": "Standard",
+          "tier": "WAF",
           "capacity": "[variables('numberOfInstances')]"
         },
         "gatewayIPConfigurations": [
@@ -220,7 +220,7 @@
             "name": "appGatewayIpConfig",
             "properties": {
               "subnet": {
-                "id": "[variables('vNetAppGatewaySubnetName')]"
+                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vNetName'), variables('vNetAppGatewaySubnetName'))]"
               }
             }
           }
@@ -229,8 +229,8 @@
           {
             "name": "appGatewayFrontendIP",
             "properties": {
-              "subnet": {
-                "id": "[variables('vNetAppGatewaySubnetName')]"
+              "PublicIPAddress": {
+                "id": "[resourceId('Microsoft.Network/publicIPAddresses',variables('publicAppGatewayIPAddress'))]"
               }
             }
           }
@@ -256,7 +256,9 @@
             "name": "appServicePool",
             "properties": {
               "BackendAddresses": [
-                "[variables('webAppPortalName')]"
+                {
+                  "fqdn": "[concat(variables('webAppPortalName'), '.azurewebsites.net')]"
+                }
               ]
             }
           }
