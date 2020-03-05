@@ -161,7 +161,7 @@
       "value": "[parameters('adminUsername')]"
     },
     "subRef": {
-      "type": "string",
+      "type": "object",
       "value": "[reference(resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vNetName'), variables('vNetSubnetName')), '2018-11-01')]"
     }
   }
