@@ -273,7 +273,8 @@
               "CookieBasedAffinity": "[parameters('cookieBasedAffinity')]",
               "probe": {
                 "id": "[concat(variables('applicationGatewayID'), '/probes/customProbe')]"
-              }
+              },
+              "pickHostNameFromBackendAddress": true
             }
           }
         ],
@@ -298,6 +299,9 @@
             "properties": {
               "defaultBackendHttpSettings": {
                 "id": "[concat(variables('applicationGatewayID'), '/backendHttpSettingsCollection/appGatewayBackendHttpSettings')]"
+              },
+              "defaultBackendAddressPool": {
+                "id": "[concat(variables('applicationGatewayID'), '/backendAddressPools/vmPool')]"
               },
               "pathRules": [
                 {
@@ -367,6 +371,7 @@
           }
         ]
       }
+    }
   ],
   "outputs": {
     "adminUsername": {
