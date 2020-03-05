@@ -153,6 +153,53 @@
           }
         ]
       }
+    },
+    {
+      "name": "[variables('WebServiceTemplateName')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2018-05-01",
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/networkSecurityGroups',variables('networkSecurityGroupName'))]",
+        "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vNetName'), variables('vNetSubnetName'))]"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[variables('WebServiceTemplateURI')]"
+        },
+        "parameters": {
+          "projectName": {
+            "value": "[parameters('projectName')]"
+          },
+          "adminUsername": {
+            "value": "[parameters('adminUsername')]"
+          },
+          "adminPassword": {
+            "value": "[parameters('adminPassword')]"
+          },
+          "location": {
+            "value": "[resourceGroup().location]"
+          },
+          "adminPublicKey": {
+            "value": "[parameters('adminPublicKey')]"
+          },
+          "customData": {
+            "value": "vmconfig.sh"
+          },
+          "branch": {
+            "value": "appService"
+          },
+          "vNetSubnetID": {
+            "value": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vNetName'), variables('vNetSubnetName'))]"
+          },
+          "numberOfInstances": {
+            "value": "[variables('numberOfInstances')]"
+          },
+          "webAppPortalName": {
+            "value": "[variables('webAppPortalName')]"
+          }
+        }
+      }
     }
   ],
   "outputs": {
@@ -161,8 +208,8 @@
       "value": "[parameters('adminUsername')]"
     },
     "subRef": {
-      "type": "object",
-      "value": "[reference(resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vNetName'), variables('vNetSubnetName')), '2018-11-01')]"
+      "type": "string",
+      "value": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vNetName'), variables('vNetSubnetName'))]"
     }
   }
 }
