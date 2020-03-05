@@ -203,7 +203,7 @@
             "name": "appGatewayFrontendIP",
             "properties": {
               "PublicIPAddress": {
-                "id": "[resourceId('Microsoft.Network/publicIPAddresses',variables('publicAppGatewayIPAddress'))]"
+                "id": "[resourceId('Microsoft.Network/publicIPAddresses', variables('publicAppGatewayIPAddress'))]"
               }
             }
           }
