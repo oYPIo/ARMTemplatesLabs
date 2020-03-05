@@ -69,6 +69,7 @@
 
   },
   "variables": {
+    "networkSecurityGroupName": "[concat(parameters('projectName'), '-nsg')]",
     "vNetName": "vehicleAppVnet",
     "vNetAddressPrefixes": "10.0.0.0/16",
     "vNetSubnetName": "webServerSubnet",
@@ -85,6 +86,30 @@
 
   },
   "resources": [
+    {
+      "apiVersion": "2016-03-30",
+      "type": "Microsoft.Network/networkSecurityGroups",
+      "name": "[variables('networkSecurityGroupName')]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "securityRules": [
+          {
+            "name": "Allow80",
+            "properties": {
+              "description": "Allow 80 from Internet",
+              "protocol": "Tcp",
+              "sourcePortRange": "*",
+              "destinationPortRange": "80",
+              "sourceAddressPrefix": "Internet",
+              "destinationAddressPrefix": "*",
+              "access": "Allow",
+              "priority": 100,
+              "direction": "Inbound"
+            }
+          }
+        ]
+      }
+    },
     {
       "type": "Microsoft.Network/publicIPAddresses",
       "apiVersion": "2018-11-01",
@@ -105,6 +130,9 @@
       "apiVersion": "2018-11-01",
       "name": "[variables('vNetName')]",
       "location": "[parameters('location')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/networkSecurityGroups',variables('networkSecurityGroupName'))]"
+      ],
       "properties": {
         "addressSpace": {
           "addressPrefixes": [
@@ -115,7 +143,10 @@
           {
             "name": "[variables('vNetSubnetName')]",
             "properties": {
-              "addressPrefix": "[variables('vNetSubnetAddressPrefix')]"
+              "addressPrefix": "[variables('vNetSubnetAddressPrefix')]",
+              "networkSecurityGroup": {
+                "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('networkSecurityGroupName'))]"
+              }
             }
           },
           {
@@ -132,6 +163,7 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2018-05-01",
       "dependsOn": [
+        "[resourceId('Microsoft.Network/networkSecurityGroups',variables('networkSecurityGroupName'))]",
         "[resourceId('Microsoft.Network/virtualNetworks', variables('vNetName'))]"
       ],
       "properties": {
