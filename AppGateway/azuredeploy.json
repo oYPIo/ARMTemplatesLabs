@@ -260,7 +260,7 @@
             "name": "vehicleListener",
             "properties": {
               "FrontendIpConfiguration": {
-                "Id": "[concat(variables('applicationGatewayID'), '/frontendIPConfigurations/appGatewayFrontendPublicIP')]"
+                "Id": "[concat(variables('applicationGatewayID'), '/frontendIPConfigurations/appGatewayFrontendIP')]"
               },
               "FrontendPort": {
                 "Id": "[concat(variables('applicationGatewayID'), '/frontendPorts/port80')]"
