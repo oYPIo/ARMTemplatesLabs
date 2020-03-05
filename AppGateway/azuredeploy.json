@@ -94,16 +94,16 @@
       "properties": {
         "securityRules": [
           {
-            "name": "ssh_rule",
+            "name": "AllowAppGwProbes",
             "properties": {
-              "description": "Locks inbound down to ssh default port 22.",
+              "description": "Allow ports for App Gw probes",
               "protocol": "Tcp",
               "sourcePortRange": "*",
-              "destinationPortRange": "22",
+              "destinationPortRange": "65503-65534 ",
               "sourceAddressPrefix": "*",
               "destinationAddressPrefix": "*",
               "access": "Allow",
-              "priority": 123,
+              "priority": 103,
               "direction": "Inbound"
             }
           }
