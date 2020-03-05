@@ -185,7 +185,6 @@
       "properties": {
         "sku": {
           "name": "[parameters('applicationGatewaySkuName')]",
-          "tier": "WAF_v2",
           "capacity": "[variables('numberOfInstances')]"
         },
         "gatewayIPConfigurations": [
