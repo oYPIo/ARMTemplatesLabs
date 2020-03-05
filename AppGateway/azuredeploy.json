@@ -207,7 +207,8 @@
       "type": "Microsoft.Network/applicationGateways",
       "location": "[parameters('location')]",
       "dependsOn": [
-        "[concat('Microsoft.Network/virtualNetworks/', variables('vNetName'))]"
+        "[resourceId('Microsoft.Network/virtualNetworks/', variables('vNetName'))]",
+        "[resourceId('Microsoft.Resources/deployments/', variables('WebServiceTemplateName'))]"
       ],
       "properties": {
         "sku": {
