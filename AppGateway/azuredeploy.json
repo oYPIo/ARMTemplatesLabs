@@ -250,10 +250,10 @@
             "properties": {
               "BackendAddresses": [
                 {
-                  "IpAddress": "[reference(variables('vNetSubnetName')).outputs.vmIPs[0].value]"
+                  "IpAddress": "[reference(variables('vNetSubnetName')).outputs.vmIPs.value[0]]"
                 },
                 {
-                  "IpAddress": "[reference(variables('vNetSubnetName')).outputs.vmIPs[1].value]"
+                  "IpAddress": "[reference(variables('vNetSubnetName')).outputs.vmIPs.value[1]]"
                 }
               ]
             }
