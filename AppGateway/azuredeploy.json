@@ -1,0 +1,408 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "deploymentURL": {
+      "type": "string",
+      "defaultValue": "[deployment().properties.templateLink.uri]"
+    },
+    "projectName": {
+      "type": "string",
+      "metadata": {
+        "description": "Specifies a name for generating resource names."
+      }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Specifies the location for all resources."
+      }
+    },
+    "adminUsername": {
+      "type": "string",
+      "metadata": {
+        "description": "Specifies a username for the Virtual Machine."
+      }
+    },
+    "adminPassword": {
+      "type": "securestring",
+      "metadata": {
+        "description": "Specifies a password for the Virtual Machine."
+      }
+    },
+    "adminPublicKey": {
+      "type": "string",
+      "metadata": {
+        "description": "Specifies the SSH rsa public key file as a string. Use \"ssh-keygen -t rsa -b 2048\" to generate your SSH key pairs."
+      }
+    },
+    "applicationGatewaySkuName": {
+      "type": "string",
+      "defaultValue": "WAF_v2"
+    },
+    "frontendPort": {
+      "type": "int",
+      "defaultValue": 80,
+      "metadata": {
+        "description": "application gateway front end port"
+      }
+    },
+    "backendPort": {
+      "type": "int",
+      "defaultValue": 80,
+      "metadata": {
+        "description": "application gateway back end port"
+      }
+    },
+    "cookieBasedAffinity": {
+      "type": "string",
+      "allowedValues": [
+        "Enabled",
+        "Disabled"
+      ],
+      "defaultValue": "Disabled",
+      "metadata": {
+        "description": "cookie based affinity"
+      }
+    }
+
+  },
+  "variables": {
+    "networkSecurityGroupName": "[concat(parameters('projectName'), '-nsg')]",
+    "vNetName": "vehicleAppVnet",
+    "vNetAddressPrefixes": "10.0.0.0/16",
+    "vNetSubnetName": "webServerSubnet",
+    "vNetSubnetAddressPrefix": "10.0.1.0/24",
+    "WebServiceTemplateName": "vehicalWebService",
+    "WebServiceTemplateURI": "[uri(parameters('deploymentURL'), 'vehicalWebService.json')]",
+    "vNetAppGatewaySubnetName": "appGatewaySubnet",
+    "vNetAppGatewaySubnetAddressPrefix": "10.0.0.0/24",
+    "publicAppGatewayIPAddress": "appGatewayPublicIp",
+    "applicationGatewayName": "vehicleAppGateway",
+    "numberOfInstances": 2,
+    "webAppPortalName": "[concat('licenserenewal', uniqueString(resourceGroup().id))]",
+    "applicationGatewayID": "[resourceId('Microsoft.Network/applicationGateways',variables('applicationGatewayName'))]"
+
+  },
+  "resources": [
+    {
+      "apiVersion": "2016-03-30",
+      "type": "Microsoft.Network/networkSecurityGroups",
+      "name": "[variables('networkSecurityGroupName')]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "securityRules": [
+          {
+            "name": "Allow80",
+            "properties": {
+              "description": "Allow 80 from Internet",
+              "protocol": "*",
+              "sourcePortRange": "*",
+              "destinationPortRange": "80",
+              "sourceAddressPrefix": "Internet",
+              "destinationAddressPrefix": "*",
+              "access": "Allow",
+              "priority": 100,
+              "direction": "Inbound"
+            }
+          },
+          {
+            "name": "default-allow-rdp",
+            "properties": {
+              "priority": 1000,
+              "protocol": "TCP",
+              "access": "Allow",
+              "direction": "Inbound",
+              "sourceAddressPrefix": "*",
+              "sourcePortRange": "*",
+              "destinationAddressPrefix": "*",
+              "destinationPortRange": "3389"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.Network/publicIPAddresses",
+      "apiVersion": "2018-11-01",
+      "name": "[variables('publicAppGatewayIPAddress')]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "publicIPAllocationMethod": "Static",
+        "dnsSettings": {
+          "domainNameLabel": "[concat('vehicleapp',uniqueString(resourceGroup().id))]"
+        }
+      },
+      "sku": {
+        "name": "Standard"
+      }
+    },
+    {
+      "type": "Microsoft.Network/virtualNetworks",
+      "apiVersion": "2018-11-01",
+      "name": "[variables('vNetName')]",
+      "location": "[parameters('location')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/networkSecurityGroups',variables('networkSecurityGroupName'))]"
+      ],
+      "properties": {
+        "addressSpace": {
+          "addressPrefixes": [
+            "[variables('vNetAddressPrefixes')]"
+          ]
+        },
+        "subnets": [
+          {
+            "name": "[variables('vNetSubnetName')]",
+            "properties": {
+              "addressPrefix": "[variables('vNetSubnetAddressPrefix')]",
+              "networkSecurityGroup": {
+                "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('networkSecurityGroupName'))]"
+              }
+            }
+          },
+          {
+            "name": "[variables('vNetAppGatewaySubnetName')]",
+            "properties": {
+              "addressPrefix": "[variables('vNetAppGatewaySubnetAddressPrefix')]"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "[variables('WebServiceTemplateName')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2018-05-01",
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/networkSecurityGroups',variables('networkSecurityGroupName'))]",
+        "[resourceId('Microsoft.Network/virtualNetworks', variables('vNetName'))]"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[variables('WebServiceTemplateURI')]"
+        },
+        "parameters": {
+          "projectName": {
+            "value": "[parameters('projectName')]"
+          },
+          "adminUsername": {
+            "value": "[parameters('adminUsername')]"
+          },
+          "adminPassword": {
+            "value": "[parameters('adminPassword')]"
+          },
+          "location": {
+            "value": "[resourceGroup().location]"
+          },
+          "adminPublicKey": {
+            "value": "[parameters('adminPublicKey')]"
+          },
+          "customData": {
+            "value": "vmconfig.sh"
+          },
+          "branch": {
+            "value": "appService"
+          },
+          "vNetSubnetID": {
+            "value": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vNetName'), variables('vNetSubnetName'))]"
+          },
+          "numberOfInstances": {
+            "value": "[variables('numberOfInstances')]"
+          },
+          "webAppPortalName": {
+            "value": "[variables('webAppPortalName')]"
+          }
+        }
+      }
+    },
+    {
+      "apiVersion": "2019-04-01",
+      "name": "[variables('applicationGatewayName')]",
+      "type": "Microsoft.Network/applicationGateways",
+      "location": "[parameters('location')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/virtualNetworks/', variables('vNetName'))]",
+        "[resourceId('Microsoft.Resources/deployments/', variables('WebServiceTemplateName'))]"
+      ],
+      "properties": {
+        "sku": {
+          "name": "[parameters('applicationGatewaySkuName')]",
+          "tier": "WAF_v2",
+          "capacity": "[variables('numberOfInstances')]"
+        },
+        "gatewayIPConfigurations": [
+          {
+            "name": "appGatewayIpConfig",
+            "properties": {
+              "subnet": {
+                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vNetName'), variables('vNetAppGatewaySubnetName'))]"
+              }
+            }
+          }
+        ],
+        "frontendIPConfigurations": [
+          {
+            "name": "appGatewayFrontendIP",
+            "properties": {
+              "PublicIPAddress": {
+                "id": "[resourceId('Microsoft.Network/publicIPAddresses', variables('publicAppGatewayIPAddress'))]"
+              }
+            }
+          }
+        ],
+        "frontendPorts": [
+          {
+            "name": "port80",
+            "properties": {
+              "Port": "[parameters('frontendPort')]"
+            }
+          }
+        ],
+        "backendAddressPools": [
+          {
+            "name": "vmPool",
+            "properties": {
+              "BackendAddresses": [
+                {
+                  "IpAddress": "[reference(variables('WebServiceTemplateName')).outputs.vmIPs.value[0]]"
+                },
+                {
+                  "IpAddress": "[reference(variables('WebServiceTemplateName')).outputs.vmIPs.value[1]]"
+                }
+              ]
+            }
+          },
+          {
+            "name": "appServicePool",
+            "properties": {
+              "BackendAddresses": [
+                {
+                  "fqdn": "[concat(variables('webAppPortalName'), '.azurewebsites.net')]"
+                }
+              ]
+            }
+          }
+        ],
+        "backendHttpSettingsCollection": [
+          {
+            "name": "appGatewayBackendHttpSettings",
+            "properties": {
+              "Port": "[parameters('backendPort')]",
+              "Protocol": "Http",
+              "CookieBasedAffinity": "[parameters('cookieBasedAffinity')]",
+              "probe": {
+                "id": "[concat(variables('applicationGatewayID'), '/probes/customProbe')]"
+              },
+              "pickHostNameFromBackendAddress": true
+            }
+          }
+        ],
+        "httpListeners": [
+          {
+            "name": "vehicleListener",
+            "properties": {
+              "FrontendIpConfiguration": {
+                "Id": "[concat(variables('applicationGatewayID'), '/frontendIPConfigurations/appGatewayFrontendIP')]"
+              },
+              "FrontendPort": {
+                "Id": "[concat(variables('applicationGatewayID'), '/frontendPorts/port80')]"
+              },
+              "Protocol": "Http"
+            }
+          }
+        ],
+        "urlPathMaps": [
+          {
+            "name": "urlPathMap",
+            "properties": {
+              "defaultBackendHttpSettings": {
+                "id": "[concat(variables('applicationGatewayID'), '/backendHttpSettingsCollection/appGatewayBackendHttpSettings')]"
+              },
+              "defaultBackendAddressPool": {
+                "id": "[concat(variables('applicationGatewayID'), '/backendAddressPools/vmPool')]"
+              },
+              "pathRules": [
+                {
+                  "name": "pathRule1",
+                  "properties": {
+                    "paths": [
+                      "/VehicleRegistration/*"
+                    ],
+                    "backendAddressPool": {
+                      "id": "[concat(variables('applicationGatewayID'), '/backendAddressPools/vmPool')]"
+                    },
+                    "backendHttpSettings": {
+                      "id": "[concat(variables('applicationGatewayID'), '/backendHttpSettingsCollection/appGatewayBackendHttpSettings')]"
+                    }
+                  }
+                },
+                {
+                  "name": "appServiceUrlPathMap",
+                  "properties": {
+                    "paths": [
+                      "/LicenseRenewal/*"
+                    ],
+                    "backendAddressPool": {
+                      "id": "[concat(variables('applicationGatewayID'), '/backendAddressPools/appServicePool')]"
+                    },
+                    "backendHttpSettings": {
+                      "id": "[concat(variables('applicationGatewayID'), '/backendHttpSettingsCollection/appGatewayBackendHttpSettings')]"
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        ],
+        "requestRoutingRules": [
+          {
+            "Name": "appServiceRule",
+            "properties": {
+              "RuleType": "PathBasedRouting",
+              "httpListener": {
+                "id": "[concat(variables('applicationGatewayID'), '/httpListeners/vehicleListener')]"
+              },
+              "backendAddressPool": {
+                "id": "[concat(variables('applicationGatewayID'), '/backendAddressPools/appServicePool')]"
+              },
+              "urlPathMap": {
+                "id": "[concat(variables('applicationGatewayID'), '/urlPathMaps/urlPathMap')]"
+              }
+            }
+          }
+        ],
+        "probes": [
+          {
+            "Name": "customProbe",
+            "properties": {
+              "Protocol": "Http",
+              "Path": "/",
+              "Interval": 15,
+              "Timeout": 10,
+              "UnhealthyThreshold": 3,
+              "MinServers": 0,
+              "PickHostNameFromBackendHttpSettings": true
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "outputs": {
+    "adminUsername": {
+      "type": "string",
+      "value": "[parameters('adminUsername')]"
+    },
+    "subRef": {
+      "type": "string",
+      "value": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vNetName'), variables('vNetSubnetName'))]"
+    },
+    "oneOfVMsIP": {
+      "type": "string",
+      "value": "[reference(variables('WebServiceTemplateName')).outputs.vmIPs.value[0]]"
+    }
+  }
+}

@@ -1,0 +1,33 @@
+Deployment:
+
+az group create \
+  --name AppGateway_Dev \
+  --location "West Europe"
+az group deployment create \
+  --name devenvironment \
+  --resource-group AppGateway_Dev \
+  --template-uri https://raw.githubusercontent.com/oYPIo/ARMTemplatesLabs/test/AppGateway/azuredeploy.json \
+  --parameters azuredeploy.parameters.dev.json
+
+
+Check VM Ips:
+
+az vm list \
+    --resource-group AppGateway_Dev \
+    --query "[*].{Name:name, PrivateIP:privateIps, PublicIP:publicIps}" \
+    --show-details \
+    --output table
+
+
+Connect to VM:
+
+ssh -o StrictHostKeyChecking=no azureuser@<SalesVM public IP>
+
+
+Generate the root URL your Application Gateway:
+
+echo http://$(az network public-ip show \
+  --resource-group AppGateway_Dev\
+  --name appGatewayPublicIp \
+  --query dnsSettings.fqdn \
+  --output tsv)
