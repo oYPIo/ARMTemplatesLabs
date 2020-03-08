@@ -75,14 +75,12 @@
         },
         "vmSettings": {
             "type": "object",
-            "defaultValue": [
-                {
-                    "name": "public"
-                },
-                {
-                    "name": "private"
-                }
-            ]
+            "defaultValue": {
+                "name": [
+                    "public",
+                    "private"
+                ]
+            }
         },
         "customData": {
             "type": "string",
@@ -305,7 +303,7 @@
         {
             "apiVersion": "2019-07-01",
             "type": "Microsoft.Compute/virtualMachines",
-            "name": "[parameters('vmSettings').value[copyIndex()].name]",
+            "name": "[parameters('vmSettings').value.name[copyIndex()]]",
             "location": "[parameters('location')]",
             "dependsOn": [
                 "[concat('Microsoft.Network/networkInterfaces/Nic', copyIndex())]"
@@ -319,7 +317,7 @@
                     "vmSize": "[variables('vmSize')]"
                 },
                 "osProfile": {
-                    "computerName": "[parameters('vmSettings').value[copyIndex()].name]",
+                    "computerName": "[parameters('vmSettings').value.name[copyIndex()]]",
                     "adminUsername": "[parameters('adminUsername')]",
                     "adminPassword": "[parameters('adminPassword')]",
                     "linuxConfiguration": "[if(equals(parameters('authenticationType'), 'password'), json('null'), variables('linuxConfiguration'))]",
