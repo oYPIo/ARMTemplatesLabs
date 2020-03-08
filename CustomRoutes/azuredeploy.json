@@ -263,7 +263,7 @@
                                 "id": "[resourceId('Microsoft.Network/publicIPAddresses', concat(parameters('uniqueDnsPrefixForVM'), copyIndex()))]"
                             },
                             "subnet": {
-                                "id": "[variables('subnetSettings')[copyIndex()].name]"
+                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vNetName'), variables('subnetSettings')[copyIndex()].name)]"
                             }
                         }
                     }
@@ -291,7 +291,7 @@
                                 "id": "[resourceId('Microsoft.Network/publicIPAddresses', concat(parameters('uniqueDnsPrefixForVM'), '2'))]"
                             },
                             "subnet": {
-                                "id": "[variables('subnetSettings')[2].name]"
+                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vNetName'), variables('subnetSettings')[2].name)]"
                             }
                         }
                     }
