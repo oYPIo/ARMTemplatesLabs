@@ -382,7 +382,7 @@
             }
         },
         {
-            "name": "config-app",
+            "name": "[concat(variables('vmNVAName'), '/config-app')]",
             "type": "Microsoft.Compute/virtualMachines/extensions",
             "location": "[parameters('location')]",
             "apiVersion": "2019-03-01",
