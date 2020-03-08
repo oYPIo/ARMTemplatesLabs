@@ -1,0 +1,24 @@
+Deployment:
+
+az group create \
+  --name CustomRoutes_Dev \
+  --location "West Europe"
+az group deployment create \
+  --name devenvironment \
+  --resource-group CustomRoutes_Dev \
+  --template-uri https://raw.githubusercontent.com/oYPIo/ARMTemplatesLabs/test/CustomRoutes/azuredeploy.json \
+  --parameters azuredeploy.parameters.dev.json
+
+
+Check VM Ips:
+
+az vm list \
+    --resource-group AppGateway_Dev \
+    --query "[*].{Name:name, PrivateIP:privateIps, PublicIP:publicIps}" \
+    --show-details \
+    --output table
+
+
+Connect to VM:
+
+ssh -o StrictHostKeyChecking=no azureuser@<SalesVM public IP>

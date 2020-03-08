@@ -13,6 +13,9 @@
       },
       "adminPublicKey": {
         "value": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDrzezFSpxH2szOmjE5zsyAF0oDzNHMCK52ElwAC2bzv6wuCFciYir1uLRoRLdCrFL5NGlJxy3GyPiqPOq2Vcr145dfj9Pc+hl2oHncDyvy/LUujRtVY8Wwp3YW3rpnKYOxOkO1zyfzMp3GPYLIynM97acvWAajFMxJ0W+C2e+zAqATtBMnjAwTheYd+i6tDOLjsTVElJeX3332OlUhogcqi5xJO6HtHcjqO1Tag9vIR6MRYYCoLVK+L68QgDFfJNy92tUpjV+97uk7HUWxLGBUTJ/UtgAmLj1PXvYjIyKvtmKvqDeB847BpqQVfbjlvEzL4gPKaxDW2e/k/Lk7tXj9 yaroslav@cc-fb242811-88f9d7797-7r5c2"
+      },
+      "customData": {
+          "value": "cloud-init.txt"
       }
     }
   }

@@ -31,17 +31,15 @@
                 "description": "Type of authentication to use on the Virtual Machine. SSH key is recommended."
             }
         },
+        "nvaPrivateIP": {
+            "type": "string",
+            "defaultValue": "10.0.2.4"
+        },
         "uniqueDnsPrefixForVM": {
             "type": "string",
+            "defaultValue": "ypiDNS",
             "metadata": {
                 "description": "Unique DNS Prefix for the Public IP used to access the Virtual Machine."
-            }
-        },
-        "vmNamePrefix": {
-            "type": "string",
-            "defaultValue": "Dynamic",
-            "metadata": {
-                "description": "VM Name Prefix for the Virtual Machine."
             }
         },
         "publicIPAddressType": {
@@ -74,31 +72,54 @@
             "metadata": {
                 "description": "Location for all resources."
             }
+        },
+        "vmSettings": {
+            "type": "object",
+            "defaultValue": [
+                {   
+                    "name": "public"
+                },
+                {   
+                    "name": "private"
+                }
+            ]
+        },
+        "customData": {
+            "type": "string",
+            "metadata": {
+                "description": "String passed down to the Virtual Machine."
+            }
         }
     },
     "variables": {
         "nsgName": "DefaultNSG",
-        "vmSize": "Standard_B1s",
         "vNetName": "vnet",
-        "subnet1Name": "publicsubnet",
-        "subnet2Name": "privatesubnet",
-        "subnet3Name": "dmzsubnet",
+        "subnetSettings": [
+            {
+               "name": "publicsubnet",
+               "ref": "[concat(variables('vNetID'),'/subnets/', variables('subnetSettings')[0].name)]",
+               "prefix": "10.0.0.0/24"
+            },
+            {
+               "name": "privatesubnet",
+               "ref": "[concat(variables('vNetID'),'/subnets/', variables('subnetSettings')[1].name)]",
+               "prefix": "10.0.1.0/24"
+            },
+            {
+               "name": "dmzsubnet",
+               "ref": "[concat(variables('vNetID'),'/subnets/', variables('subnetSettings')[2].name)]",
+               "prefix": "10.0.2.0/24"
+            }
+        ],
         "vNetID": "[resourceId('Microsoft.Network/virtualNetworks', variables('vNetName'))]",
-        "subnet1Ref": "[concat(variables('vNetID'),'/subnets/', variables('subnet1Name'))]",
-        "subnet2Ref": "[concat(variables('vNetID'),'/subnets/', variables('subnet2Name'))]",
-        "subnet3Ref": "[concat(variables('vNetID'),'/subnets/', variables('subnet3Name'))]",
         "vNetAddressPrefix": "10.0.0.0/16",
-        "subnet1Prefix": "10.0.0.0/24",
-        "subnet2Prefix": "10.0.1.0/24",
-        "subnet3Prefix": "10.0.2.0/24",
         "routeTableName": "publictable",
         "customRouteName": "productionsubnet",
         "customRoutePrefix": "10.0.1.0/24",
-        "customRoutNextHopeIpAddress": "10.0.2.4",
         "vmNVAName": "nva",
+        "vmSize": "Standard_B1s",
         "imagePublisher": "Canonical",
         "imageOffer": "UbuntuServer",
-        "NvmPrivateIPAddress": "10.1.1.4",
         "linuxConfiguration": {
             "disablePasswordAuthentication": false,
             "ssh": {
@@ -115,15 +136,16 @@
     },
     "resources": [
         {
-            "apiVersion": "2015-06-15",
+            "apiVersion": "2019-04-01",
             "type": "Microsoft.Network/publicIPAddresses",
             "name": "[concat(parameters('uniqueDnsPrefixForVM'), copyIndex())]",
             "location": "[parameters('location')]",
             "copy": {
-                "name": "pubIPLoop",
+                "name": "pubIPCopy",
                 "count": "[variables('scaleNumber')]"
             },
-            "properties": {
+            "sku": "Basic",
+            "properties": {    
                 "publicIPAllocationMethod": "[parameters('publicIPAddressType')]",
                 "dnsSettings": {
                     "domainNameLabel": "[concat(parameters('uniqueDnsPrefixForVM'), copyIndex())]"
@@ -166,7 +188,7 @@
                         "properties": {
                             "addressPrefix": "[variables('customRoutePrefix')]",
                             "nextHopType": "VirtualAppliance",
-                            "nextHopIpAddress": "[variables('customRoutNextHopeIpAddress')]"
+                            "nextHopIpAddress": "[parameters('nvaPrivateIP')]"
                         }
                     }
                 ],
@@ -190,9 +212,9 @@
                 },
                 "subnets": [
                     {
-                        "name": "[variables('subnet1Name')]",
+                        "name": "[variables('subnetSettings')[0].name]",
                         "properties": {
-                            "addressPrefix": "[variables('subnet1Prefix')]",
+                            "addressPrefix": "[variables('subnetSettings')[0].prefix]",
                             "networkSecurityGroup": {
                                 "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('nsgName'))]"
                             },
@@ -202,18 +224,18 @@
                         }
                     },
                     {
-                        "name": "[variables('subnet2Name')]",
+                        "name": "[variables('subnetSettings')[1].name]",
                         "properties": {
-                            "addressPrefix": "[variables('subnet2Prefix')]",
+                            "addressPrefix": "[variables('subnetSettings')[1].prefix]",
                             "networkSecurityGroup": {
                                 "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('nsgName'))]"
                             }
                         }
                     },
                     {
-                        "name": "[variables('subnet3Name')]",
+                        "name": "[variables('subnetSettings')[2].name]",
                         "properties": {
-                            "addressPrefix": "[variables('subnet3Prefix')]",
+                            "addressPrefix": "[variables('subnetSettings')[2].prefix]",
                             "networkSecurityGroup": {
                                 "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('nsgName'))]"
                             }
@@ -223,14 +245,18 @@
             }
         },
         {
-            "apiVersion": "2015-06-15",
+            "apiVersion": "2019-04-01",
             "type": "Microsoft.Network/networkInterfaces",
-            "name": "Nic0",
+            "name": "[concat('Nic', copyIndex())]",
             "location": "[parameters('location')]",
             "dependsOn": [
-                "[concat('Microsoft.Network/virtualNetworks/', variables('vNetName'))]",
-                "[concat('Microsoft.Network/publicIPAddresses/', parameters('uniqueDnsPrefixForVM'), '0')]"
+                "[concat('Microsoft.Network/publicIPAddresses/', parameters('uniqueDnsPrefixForVM'), copyIndex())]",
+                "[concat('Microsoft.Network/virtualNetworks/', variables('vNetName'))]"
             ],
+             "copy":{
+                "name": "vmCopy",
+                "count": 2
+            },
             "properties": {
                 "ipConfigurations": [
                     {
@@ -238,37 +264,10 @@
                         "properties": {
                             "privateIPAllocationMethod": "Dynamic",
                             "publicIPAddress": {
-                                "id": "[resourceId('Microsoft.Network/publicIPAddresses', concat(parameters('uniqueDnsPrefixForVM'), '0'))]"
+                                "id": "[resourceId('Microsoft.Network/publicIPAddresses', concat(parameters('uniqueDnsPrefixForVM'), copyIndex()))]"
                             },
                             "subnet": {
-                                "id": "[variables('subnet1Ref')]"
-                            }
-                        }
-                    }
-                ]
-            }
-        },
-        {
-            "apiVersion": "2015-06-15",
-            "type": "Microsoft.Network/networkInterfaces",
-            "name": "Nic1",
-            "location": "[parameters('location')]",
-            "dependsOn": [
-                "[concat('Microsoft.Network/publicIPAddresses/', parameters('uniqueDnsPrefixForVM'), '1')]",
-                "[concat('Microsoft.Network/virtualNetworks/', variables('vNetName'))]"
-            ],
-            "properties": {
-                "ipConfigurations": [
-                    {
-                        "name": "ipconfig1",
-                        "properties": {
-                            "privateIPAllocationMethod": "Static",
-                            "privateIPAddress": "[variables('NvmPrivateIPAddress')]",
-                            "publicIPAddress": {
-                                "id": "[resourceId('Microsoft.Network/publicIPAddresses', concat(parameters('uniqueDnsPrefixForVM'), '1'))]"
-                            },
-                            "subnet": {
-                                "id": "[variables('subnet2Ref')]"
+                                "id": "[variables('subnetSettings')[copyIndex()].name]"
                             }
                         }
                     }
@@ -285,21 +284,65 @@
                 "[concat('Microsoft.Network/virtualNetworks/', variables('vNetName'))]"
             ],
             "properties": {
+                "enableIPForwarding": true,
                 "ipConfigurations": [
                     {
                         "name": "ipconfig1",
                         "properties": {
-                            "privateIPAllocationMethod": "Dynamic",
+                            "privateIPAllocationMethod": "Static",
+                            "privateIPAddress": "[parameters('nvaPrivateIP')]",
                             "publicIPAddress": {
                                 "id": "[resourceId('Microsoft.Network/publicIPAddresses', concat(parameters('uniqueDnsPrefixForVM'), '2'))]"
                             },
                             "subnet": {
-                                "id": "[variables('subnet3Ref')]"
+                                "id": "[variables('subnetSettings')[2].name]"
                             }
                         }
                     }
-                ],
-                "enableIPForwarding": true
+                ]
+            }
+        },
+        {
+            "apiVersion": "2019-07-01",
+            "type": "Microsoft.Compute/virtualMachines",
+            "name": "[parameters('vmSettings').value[copyIndex()].name]",
+            "location": "[parameters('location')]",
+            "dependsOn": [
+                "[concat('Microsoft.Network/networkInterfaces/Nic', copyIndex())]"
+            ],
+            "copy":{
+                "name": "vmCopy",
+                "count": 2
+            },
+            "properties": {
+                "hardwareProfile": {
+                    "vmSize": "[variables('vmSize')]"
+                },
+                "osProfile": {
+                    "computerName": "[parameters('vmSettings').value[copyIndex()].name]",
+                    "adminUsername": "[parameters('adminUsername')]",
+                    "adminPassword": "[parameters('adminPassword')]",
+                    "linuxConfiguration": "[if(equals(parameters('authenticationType'), 'password'), json('null'), variables('linuxConfiguration'))]",
+                    "customData": "[base64(parameters('customData'))]"
+                },
+                "storageProfile": {
+                    "imageReference": {
+                        "publisher": "[variables('imagePublisher')]",
+                        "offer": "[variables('imageOffer')]",
+                        "sku": "[parameters('ubuntuOSVersion')]",
+                        "version": "latest"
+                    },
+                    "osDisk": {
+                        "createOption": "FromImage"
+                    }
+                },
+                "networkProfile": {
+                    "networkInterfaces": [
+                        {
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces', concat('Nic', copyIndex()))]"
+                        }
+                    ]
+                }
             }
         },
         {
@@ -343,7 +386,7 @@
         {
             "name": "config-app",
             "type": "Microsoft.Compute/virtualMachines/extensions",
-            "location": "[resourceGroup().location]",
+            "location": "[parameters('location')]",
             "apiVersion": "2019-03-01",
             "dependsOn": [
                 "[concat('Microsoft.Compute/virtualMachines/', variables('vmNVAName'))]"
@@ -357,7 +400,7 @@
                 "typeHandlerVersion": "2.1",
                 "autoUpgradeMinorVersion": true,
                 "protectedSettings": {
-                    "commandToExecute": "sudo sysctl -w net.ipv4.ip_forward=1"
+                    "commandToExecute": "sudo sysctl -w net.ipv4.ip_forward=1; mkdir hochuPesat;"
                 }
             }
         }
