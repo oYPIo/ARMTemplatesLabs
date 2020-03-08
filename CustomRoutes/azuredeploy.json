@@ -145,10 +145,7 @@
                 "name":"Basic"
             },
             "properties": {
-                "publicIPAllocationMethod": "[parameters('publicIPAddressType')]",
-                "dnsSettings": {
-                    "domainNameLabel": "[concat(parameters('uniqueDnsPrefixForVM'), copyIndex())]"
-                }
+                "publicIPAllocationMethod": "[parameters('publicIPAddressType')]"
             }
         },
         {
