@@ -95,17 +95,17 @@
         "subnetSettings": [
             {
                 "name": "publicsubnet",
-                "ref": "[concat(variables('vNetID'),'/subnets/', variables('subnetSettings')[0].name)]",
+                "ref": "[concat(variables('vNetID'),'/subnets/publicsubnet')]",
                 "prefix": "10.0.0.0/24"
             },
             {
                 "name": "privatesubnet",
-                "ref": "[concat(variables('vNetID'),'/subnets/', variables('subnetSettings')[1].name)]",
+                "ref": "[concat(variables('vNetID'),'/subnets/privatesubnet')]",
                 "prefix": "10.0.1.0/24"
             },
             {
                 "name": "dmzsubnet",
-                "ref": "[concat(variables('vNetID'),'/subnets/', variables('subnetSettings')[2].name)]",
+                "ref": "[concat(variables('vNetID'),'/subnets/dmzsubnet')]",
                 "prefix": "10.0.2.0/24"
             }
         ],
