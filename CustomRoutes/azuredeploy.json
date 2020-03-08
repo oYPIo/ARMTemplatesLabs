@@ -142,7 +142,9 @@
                 "name": "pubIPCopy",
                 "count": "[variables('scaleNumber')]"
             },
-            "sku": "Basic",
+            "sku": {
+                "name":"Basic"
+            },
             "properties": {
                 "publicIPAllocationMethod": "[parameters('publicIPAddressType')]",
                 "dnsSettings": {
