@@ -10,14 +10,13 @@ az group deployment create \
   --parameters azuredeploy.parameters.dev.json
 
 
-Check VM Ips:
+Check VM state:
 
-az vm list \
-    --resource-group AppGateway_Dev \
-    --query "[*].{Name:name, PrivateIP:privateIps, PublicIP:publicIps}" \
+watch -d -n 5 "az vm list \
+    --resource-group CustomRoutes_Dev \
     --show-details \
-    --output table
-
+    --query '[*].{Name:name, ProvisioningState:provisioningState, PowerState:powerState}' \
+    --output table"
 
 Connect to VM:
 
