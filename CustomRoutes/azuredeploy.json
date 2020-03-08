@@ -2,6 +2,9 @@
     "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
+        "projectName": {
+            "type": "string"
+        },
         "adminUsername": {
             "type": "string",
             "metadata": {
@@ -76,10 +79,10 @@
         "vmSettings": {
             "type": "object",
             "defaultValue": [
-                {   
+                {
                     "name": "public"
                 },
-                {   
+                {
                     "name": "private"
                 }
             ]
@@ -96,19 +99,19 @@
         "vNetName": "vnet",
         "subnetSettings": [
             {
-               "name": "publicsubnet",
-               "ref": "[concat(variables('vNetID'),'/subnets/', variables('subnetSettings')[0].name)]",
-               "prefix": "10.0.0.0/24"
+                "name": "publicsubnet",
+                "ref": "[concat(variables('vNetID'),'/subnets/', variables('subnetSettings')[0].name)]",
+                "prefix": "10.0.0.0/24"
             },
             {
-               "name": "privatesubnet",
-               "ref": "[concat(variables('vNetID'),'/subnets/', variables('subnetSettings')[1].name)]",
-               "prefix": "10.0.1.0/24"
+                "name": "privatesubnet",
+                "ref": "[concat(variables('vNetID'),'/subnets/', variables('subnetSettings')[1].name)]",
+                "prefix": "10.0.1.0/24"
             },
             {
-               "name": "dmzsubnet",
-               "ref": "[concat(variables('vNetID'),'/subnets/', variables('subnetSettings')[2].name)]",
-               "prefix": "10.0.2.0/24"
+                "name": "dmzsubnet",
+                "ref": "[concat(variables('vNetID'),'/subnets/', variables('subnetSettings')[2].name)]",
+                "prefix": "10.0.2.0/24"
             }
         ],
         "vNetID": "[resourceId('Microsoft.Network/virtualNetworks', variables('vNetName'))]",
@@ -145,7 +148,7 @@
                 "count": "[variables('scaleNumber')]"
             },
             "sku": "Basic",
-            "properties": {    
+            "properties": {
                 "publicIPAllocationMethod": "[parameters('publicIPAddressType')]",
                 "dnsSettings": {
                     "domainNameLabel": "[concat(parameters('uniqueDnsPrefixForVM'), copyIndex())]"
@@ -253,7 +256,7 @@
                 "[concat('Microsoft.Network/publicIPAddresses/', parameters('uniqueDnsPrefixForVM'), copyIndex())]",
                 "[concat('Microsoft.Network/virtualNetworks/', variables('vNetName'))]"
             ],
-             "copy":{
+            "copy": {
                 "name": "vmCopy",
                 "count": 2
             },
@@ -310,7 +313,7 @@
             "dependsOn": [
                 "[concat('Microsoft.Network/networkInterfaces/Nic', copyIndex())]"
             ],
-            "copy":{
+            "copy": {
                 "name": "vmCopy",
                 "count": 2
             },
