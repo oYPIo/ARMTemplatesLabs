@@ -11,12 +11,32 @@ az group deployment create \
 
 
 Check VM state:
-
 watch -d -n 5 "az vm list \
     --resource-group CustomRoutes_Dev \
     --show-details \
     --query '[*].{Name:name, ProvisioningState:provisioningState, PowerState:powerState}' \
     --output table"
+
+
+Test1:
+
+PUBLICIP="$(az vm list-ip-addresses \
+    --resource-group CustomRoutes_Dev \
+    --name public \
+    --query "[].virtualMachine.network.publicIpAddresses[*].ipAddress" \
+    --output tsv)"
+
+echo $PUBLICIP
+
+PRIVATEIP="$(az vm list-ip-addresses \
+    --resource-group CustomRoutes_Dev \
+    --name private \
+    --query "[].virtualMachine.network.publicIpAddresses[*].ipAddress" \
+    --output tsv)"
+
+echo $PRIVATEIP
+
+ssh -t -o StrictHostKeyChecking=no YPI@$PUBLICIP 'traceroute private --type=icmp; exit'
 
 Connect to VM:
 

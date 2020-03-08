@@ -159,15 +159,28 @@
                         "name": "rdp_rule",
                         "properties": {
                             "description": "Allow RDP",
-                            "protocol": "Tcp",
+                            "protocol": "*",
                             "sourcePortRange": "*",
                             "destinationPortRange": "3389",
-                            "sourceAddressPrefix": "Internet",
+                            "sourceAddressPrefix": "*",
                             "destinationAddressPrefix": "*",
                             "access": "Allow",
                             "priority": 100,
                             "direction": "Inbound"
                         }
+                    },
+                    {
+                       "name": "AllOutbound",
+                        "properties": {
+                            "protocol": "*",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "3389",
+                            "sourceAddressPrefix": "*",
+                            "destinationAddressPrefix": "*",
+                            "access": "Allow",
+                            "priority": 99,
+                            "direction": "Outbound"
+                        } 
                     }
                 ]
             }
