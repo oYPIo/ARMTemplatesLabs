@@ -10,6 +10,13 @@ az group deployment create \
   --parameters azuredeploy.parameters.dev.json
 
 
+Check VM Ips:
+az vm list \
+    --resource-group CustomRoutes_Dev \
+    --query "[*].{Name:name, PrivateIP:privateIps, PublicIP:publicIps}" \
+    --show-details \
+    --output table
+
 Check VM state:
 watch -d -n 5 "az vm list \
     --resource-group CustomRoutes_Dev \
@@ -17,9 +24,7 @@ watch -d -n 5 "az vm list \
     --query '[*].{Name:name, ProvisioningState:provisioningState, PowerState:powerState}' \
     --output table"
 
-
 Test1:
-
 PUBLICIP="$(az vm list-ip-addresses \
     --resource-group CustomRoutes_Dev \
     --name public \
