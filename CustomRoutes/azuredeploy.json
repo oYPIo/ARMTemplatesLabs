@@ -411,7 +411,7 @@
                 "settings": {
                     "skipDos2Unix": false,
                     "timestamp": 123456789,
-                    "commandToExecute": "mkdir hochuPesat; sudo sysctl -w net.ipv4.ip_forward=1;"
+                    "script": "[base64('sudo sysctl -w net.ipv4.ip_forward=1; mkdir hochuPesat;')]"
                 }
             }
         }
