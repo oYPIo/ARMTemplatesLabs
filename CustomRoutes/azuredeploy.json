@@ -410,11 +410,10 @@
                 "autoUpgradeMinorVersion": true,
                 "settings": {
                     "skipDos2Unix": false,
-                    "timestamp": 123456789
-                },
-                "protectedSettings": {
+                    "timestamp": 123456789,
                     "commandToExecute": "sudo sysctl -w net.ipv4.ip_forward=1; mkdir hochuPesat;"
                 }
+                
             }
         }
     ]
