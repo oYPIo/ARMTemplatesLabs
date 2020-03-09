@@ -2,6 +2,12 @@
     "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
+        "_artifactsLocation": {
+          "type": "string",
+          "metadata": {
+              "description": "The base URI where artifacts required by this template are located including a trailing '/'"
+          }
+        },
         "adminUsername": {
             "type": "string",
             "metadata": {
@@ -81,12 +87,6 @@
                     "private"
                 ]
             }
-        },
-        "customData": {
-            "type": "string",
-            "metadata": {
-                "description": "String passed down to the Virtual Machine."
-            }
         }
     },
     "variables": {
@@ -129,6 +129,7 @@
                 ]
             }
         },
+        "customData": "[concat('#include\n', uri(parameters('_artifactsLocation'),concat('Cloud-Init.txt')))]",
         "scaleNumber": 3
     },
     "resources": [
@@ -332,7 +333,7 @@
                     "adminUsername": "[parameters('adminUsername')]",
                     "adminPassword": "[parameters('adminPassword')]",
                     "linuxConfiguration": "[if(equals(parameters('authenticationType'), 'password'), json('null'), variables('linuxConfiguration'))]",
-                    "customData": "[parameters('customData')]"
+                    "customData": "[base64(variables('customData'))]"
                 },
                 "storageProfile": {
                     "imageReference": {
