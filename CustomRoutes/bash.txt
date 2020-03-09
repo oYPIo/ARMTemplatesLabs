@@ -46,3 +46,6 @@ ssh -t -o StrictHostKeyChecking=no YPI@$PUBLICIP 'traceroute private --type=icmp
 
 Connect to VM:
 ssh -o StrictHostKeyChecking=no azureuser@<SalesVM public IP>
+
+path to the VM's extension script: 
+var/lib/waagent/custom-script/download/0

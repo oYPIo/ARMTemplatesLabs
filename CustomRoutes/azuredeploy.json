@@ -412,7 +412,7 @@
                 "settings": {
                     "skipDos2Unix": false,
                     "timestamp": 123456789,
-                    "script": "[base64('sudo sysctl -w net.ipv4.ip_forward=1; cd ~; mkdir hochuPesat;')]"
+                    "script": "[base64('sudo sysctl -w net.ipv4.ip_forward=1;')]"
                 }
             }
         }

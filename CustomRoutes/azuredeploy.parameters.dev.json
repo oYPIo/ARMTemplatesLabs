@@ -3,7 +3,7 @@
     "contentVersion": "1.0.0.0",
     "parameters": {
       "_artifactsLocation": {
-        "value": "https://raw.githubusercontent.com/oYPIo/ARMTemplatesLabs/test/CustomRoutes/"
+        "value": "https://github.com/oYPIo/ARMTemplatesLabs/tree/test/CustomRoutes"
       },
       "adminUsername": {
         "value": "YPI"
