@@ -332,7 +332,10 @@
                     "adminUsername": "[parameters('adminUsername')]",
                     "adminPassword": "[parameters('adminPassword')]",
                     "linuxConfiguration": "[if(equals(parameters('authenticationType'), 'password'), json('null'), variables('linuxConfiguration'))]",
-                    "customData": "[base64(parameters('customData'))]"
+                    "customData": "[base64('#cloud-config
+package_upgrade: true
+packages:
+   - inetutils-traceroute')]"
                 },
                 "storageProfile": {
                     "imageReference": {
@@ -411,7 +414,7 @@
                 "settings": {
                     "skipDos2Unix": false,
                     "timestamp": 123456789,
-                    "script": "[base64('sudo sysctl -w net.ipv4.ip_forward=1; mkdir hochuPesat;')]"
+                    "script": "[base64('sudo sysctl -w net.ipv4.ip_forward=1; cd ~; mkdir hochuPesat;')]"
                 }
             }
         }

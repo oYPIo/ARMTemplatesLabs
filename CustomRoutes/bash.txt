@@ -43,6 +43,6 @@ echo $PRIVATEIP
 
 ssh -t -o StrictHostKeyChecking=no YPI@$PUBLICIP 'traceroute private --type=icmp; exit'
 
-Connect to VM:
 
+Connect to VM:
 ssh -o StrictHostKeyChecking=no azureuser@<SalesVM public IP>
