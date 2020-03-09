@@ -129,7 +129,7 @@
                 ]
             }
         },
-        "customData": "[concat('#include\n', uri(parameters('_artifactsLocation'),concat('Cloud-Init.txt')))]",
+        "customData": "[concat('#include\n', uri(parameters('_artifactsLocation'),concat('cloud-init.txt')))]",
         "scaleNumber": 3
     },
     "resources": [
