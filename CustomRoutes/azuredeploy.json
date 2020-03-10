@@ -131,7 +131,7 @@
             }
         },
         "customData": "[concat('#include\n', uri(parameters('_artifactsLocation'), 'cloud-init.txt'))]",
-        "nvaCustomData": "[concat('#include\n', uri(parameters('_artifactsLocation'), 'cloud-init.txt'))]",
+        "nvaCustomData": "[concat('#include\n', uri(parameters('_artifactsLocation'), 'script.sh'))]",
         "scaleNumber": 3
     },
     "resources": [
