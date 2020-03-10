@@ -2,7 +2,7 @@
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    "deploymentURL": {
+    "_artifactsLocation": {
       "type": "string",
       "defaultValue": "[deployment().properties.templateLink.uri]"
     },
@@ -75,7 +75,7 @@
     "vNetSubnetName": "webServerSubnet",
     "vNetSubnetAddressPrefix": "10.0.1.0/24",
     "WebServiceTemplateName": "vehicalWebService",
-    "WebServiceTemplateURI": "[uri(parameters('deploymentURL'), 'vehicalWebService.json')]",
+    "WebServiceTemplateURI": "[uri(parameters('_artifactsLocation'), 'vehicalWebService.json')]",
     "vNetAppGatewaySubnetName": "appGatewaySubnet",
     "vNetAppGatewaySubnetAddressPrefix": "10.0.0.0/24",
     "publicAppGatewayIPAddress": "appGatewayPublicIp",
@@ -201,7 +201,7 @@
             "value": "[parameters('adminPublicKey')]"
           },
           "customData": {
-            "value": "vmconfig.sh"
+            "value": "[concat('#include\n', uri(parameters('_artifactsLocation'), 'vmconfig.sh'))]"
           },
           "branch": {
             "value": "appService"
@@ -403,6 +403,10 @@
     "oneOfVMsIP": {
       "type": "string",
       "value": "[reference(variables('WebServiceTemplateName')).outputs.vmIPs.value[0]]"
+    },
+    "deploytURL": {
+      "type": "string",
+      "value": "[parameters('_artifactsLocation')]"
     }
   }
 }
