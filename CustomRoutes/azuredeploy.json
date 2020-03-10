@@ -131,6 +131,7 @@
             }
         },
         "customData": "[concat('#include\n', uri(parameters('_artifactsLocation'), 'cloud-init.txt'))]",
+        "nvaCustomData": "[concat('#include\n', uri(parameters('_artifactsLocation'), 'cloud-init.txt'))]",
         "scaleNumber": 3
     },
     "resources": [
@@ -372,7 +373,8 @@
                     "computerName": "[variables('vmNVAName')]",
                     "adminUsername": "[parameters('adminUsername')]",
                     "adminPassword": "[parameters('adminPassword')]",
-                    "linuxConfiguration": "[if(equals(parameters('authenticationType'), 'password'), json('null'), variables('linuxConfiguration'))]"
+                    "linuxConfiguration": "[if(equals(parameters('authenticationType'), 'password'), json('null'), variables('linuxConfiguration'))]",
+                    "customData": "[base64(variables('nvaCustomData'))]"
                 },
                 "storageProfile": {
                     "imageReference": {
@@ -391,29 +393,6 @@
                             "id": "[resourceId('Microsoft.Network/networkInterfaces', 'Nic2')]"
                         }
                     ]
-                }
-            }
-        },
-        {
-            "name": "[concat(variables('vmNVAName'), '/config-app')]",
-            "type": "Microsoft.Compute/virtualMachines/extensions",
-            "location": "[parameters('location')]",
-            "apiVersion": "2019-03-01",
-            "dependsOn": [
-                "[concat('Microsoft.Compute/virtualMachines/', variables('vmNVAName'))]"
-            ],
-            "tags": {
-                "displayName": "config-app"
-            },
-            "properties": {
-                "publisher": "Microsoft.Azure.Extensions",
-                "type": "CustomScript",
-                "typeHandlerVersion": "2.1",
-                "autoUpgradeMinorVersion": true,
-                "settings": {
-                    "skipDos2Unix": false,
-                    "timestamp": 123456789,
-                    "script": "[base64('sudo sysctl -w net.ipv4.ip_forward=1;')]"
                 }
             }
         }
