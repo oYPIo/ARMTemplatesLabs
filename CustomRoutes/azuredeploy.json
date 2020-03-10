@@ -6,7 +6,8 @@
           "type": "string",
           "metadata": {
               "description": "The base URI where artifacts required by this template are located including a trailing '/'"
-          }
+          },
+          "defaultValue": "[deployment().properties.templateLink.uri]"
         },
         "adminUsername": {
             "type": "string",
@@ -129,7 +130,7 @@
                 ]
             }
         },
-        "customData": "[concat('#include\n', uri(parameters('_artifactsLocation'),concat('cloud-init.txt')))]",
+        "customData": "[concat('#include\n', uri(parameters('_artifactsLocation'), 'cloud-init.txt'))]",
         "scaleNumber": 3
     },
     "resources": [
