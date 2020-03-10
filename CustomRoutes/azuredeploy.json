@@ -131,7 +131,7 @@
             }
         },
         "customData": "[concat('#include\n', uri(parameters('_artifactsLocation'), 'cloud-init.txt'))]",
-        "nvaCustomData": "",
+        "nvaCustomData": "[uri(parameters('_artifactsLocation'), 'script.sh')]",
         "scaleNumber": 3
     },
     "resources": [
@@ -373,7 +373,8 @@
                     "computerName": "[variables('vmNVAName')]",
                     "adminUsername": "[parameters('adminUsername')]",
                     "adminPassword": "[parameters('adminPassword')]",
-                    "linuxConfiguration": "[if(equals(parameters('authenticationType'), 'password'), json('null'), variables('linuxConfiguration'))]"
+                    "linuxConfiguration": "[if(equals(parameters('authenticationType'), 'password'), json('null'), variables('linuxConfiguration'))]",
+                    "customData": "[base64(variables('nvaCustomData'))]"
                 },
                 "storageProfile": {
                     "imageReference": {
