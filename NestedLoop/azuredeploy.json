@@ -23,15 +23,15 @@
             {
                 "vnetName": "YourVN",
                 "vnetLocation": "[resourceGroup().location]",
-                "vnetAddressPrefix": "15.1.0.0/16",
+                "vnetAddressPrefix": "15.3.0.0/16",
                 "subnetSettings": [
                     {
                         "subnetName": "Delta",
-                        "subnetPrefix": "15.3.0.0/24"
+                        "subnetPrefix": "15.3.2.0/24"
                     },
                     {
                         "subnetName": "Gama",
-                        "subnetPrefix": "15.5.1.0/24"
+                        "subnetPrefix": "15.3.5.0/24"
                     }
                 ]
             }
