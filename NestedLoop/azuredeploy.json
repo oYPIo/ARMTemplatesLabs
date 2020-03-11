@@ -1,0 +1,60 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+    },
+    "variables": {
+        "vnetSettings": [
+            {
+                "vnetName": "MyVN",
+                "vnetLocation": "[resourceGroup().location]",
+                "vnetAddressPrefix": "10.0.0.0/16",
+                "subnetSettings": [
+                    {
+                        "subnetName": "Alpha",
+                        "subnetPrefix": "10.0.0.0/24"
+                    },
+                    {
+                        "subnetName": "Beta",
+                        "subnetPrefix": "10.0.1.0/24"
+                    }
+                ]
+            }
+        ]
+    },
+    "resources": [
+        {
+            "apiVersion": "2019-04-01",
+            "type": "Microsoft.Network/virtualNetworks",
+            "name": "[variables('vnetSettings')[copyIndex()].vnetName]",
+            "location": "[variables('vnetSettings')[copyIndex()].vnetLocation]",
+            "dependsOn": [
+            ],
+            "copy": {
+                "name": "vnetCopy",
+                "count": "[length(variables('vnetSettings'))]"
+            },
+            "properties": {
+                "addressSpace": {
+                    "addressPrefixes": [
+                        "[variables('vnetSettings')[copyIndex()].vnetAddressPrefix]"
+                    ]
+                },
+                "copy": [
+                    {
+                        "name": "subnets",
+                        "count": "[length(variables('vnetSettings')[copyIndex('vnetCopy')].subnetSettings)]",
+                        "input": {
+                            "name": "[variables('vnetSettings')[copyIndex('vnetCopy')].subnetSettings[copyIndex('subnets')].subnetName]",
+                            "properties": {
+                                "addressPrefix": "[variables('vnetSettings')[copyIndex('vnetCopy')].subnetSettings[copyIndex('subnets')].subnetPrefix]"
+                            }
+                        }
+                    }
+                ]
+            }
+        }
+    ],
+    "outputs": {
+    }
+}
