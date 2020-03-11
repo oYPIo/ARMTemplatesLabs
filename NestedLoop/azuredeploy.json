@@ -8,15 +8,30 @@
             {
                 "vnetName": "MyVN",
                 "vnetLocation": "[resourceGroup().location]",
-                "vnetAddressPrefix": "10.0.0.0/16",
+                "vnetAddressPrefix": "15.0.0.0/16",
                 "subnetSettings": [
                     {
                         "subnetName": "Alpha",
-                        "subnetPrefix": "10.0.0.0/24"
+                        "subnetPrefix": "15.0.0.0/24"
                     },
                     {
                         "subnetName": "Beta",
-                        "subnetPrefix": "10.0.1.0/24"
+                        "subnetPrefix": "15.0.1.0/24"
+                    }
+                ]
+            },
+            {
+                "vnetName": "YourVN",
+                "vnetLocation": "[resourceGroup().location]",
+                "vnetAddressPrefix": "15.1.0.0/16",
+                "subnetSettings": [
+                    {
+                        "subnetName": "Alpha",
+                        "subnetPrefix": "15.1.0.0/24"
+                    },
+                    {
+                        "subnetName": "Beta",
+                        "subnetPrefix": "15.1.1.0/24"
                     }
                 ]
             }
