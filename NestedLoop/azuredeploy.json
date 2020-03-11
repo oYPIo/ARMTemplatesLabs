@@ -27,11 +27,11 @@
                 "subnetSettings": [
                     {
                         "subnetName": "Delta",
-                        "subnetPrefix": "15.1.0.0/24"
+                        "subnetPrefix": "15.3.0.0/24"
                     },
                     {
                         "subnetName": "Gama",
-                        "subnetPrefix": "15.1.1.0/24"
+                        "subnetPrefix": "15.5.1.0/24"
                     }
                 ]
             }
