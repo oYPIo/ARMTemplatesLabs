@@ -26,11 +26,11 @@
                 "vnetAddressPrefix": "15.1.0.0/16",
                 "subnetSettings": [
                     {
-                        "subnetName": "Alpha",
+                        "subnetName": "Delta",
                         "subnetPrefix": "15.1.0.0/24"
                     },
                     {
-                        "subnetName": "Beta",
+                        "subnetName": "Gama",
                         "subnetPrefix": "15.1.1.0/24"
                     }
                 ]
