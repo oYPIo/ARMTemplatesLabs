@@ -5,33 +5,61 @@
     },
     "variables": {
         "vnetSettings": [
+
             {
-                "vnetName": "MyVN",
-                "vnetLocation": "[resourceGroup().location]",
-                "vnetAddressPrefix": "15.0.0.0/16",
+                "vnetName": "CoreServicesVnet",
+                "vnetLocation": "West US",
+                "vnetAddressPrefix": "10.20.0.0/16",
                 "subnetSettings": [
                     {
-                        "subnetName": "Alpha",
-                        "subnetPrefix": "15.0.0.0/24"
+                        "subnetName": "GatewaySubnet",
+                        "subnetAddressPrefix": "10.20.0.0/27"
                     },
                     {
-                        "subnetName": "Beta",
-                        "subnetPrefix": "15.0.1.0/24"
+                        "subnetName": "SharedServicesSubnet",
+                        "subnetAddressPrefix": "10.20.10.0/24"
+                    },
+                    {
+                        "subnetName": "DatabaseSubnet",
+                        "subnetAddressPrefix": "10.20.20.0/24"
+                    },
+                    {
+                        "subnetName": "PublicWebServiceSubnet",
+                        "subnetAddressPrefix": "10.20.0.0/27"
                     }
                 ]
             },
             {
-                "vnetName": "YourVN",
-                "vnetLocation": "[resourceGroup().location]",
-                "vnetAddressPrefix": "15.3.0.0/16",
+                "vnetName": "ManufacturingVnet",
+                "vnetLocation": "North Europe",
+                "vnetAddressPrefix": "10.30.0.0/16",
                 "subnetSettings": [
                     {
-                        "subnetName": "Delta",
-                        "subnetPrefix": "15.3.2.0/24"
+                        "subnetName": "ManufacturingSystemSubnet",
+                        "subnetAddressPrefix": "10.30.10.0/24"
                     },
                     {
-                        "subnetName": "Gama",
-                        "subnetPrefix": "15.3.5.0/24"
+                        "subnetName": "SensorSubnet1",
+                        "subnetAddressPrefix": "10.30.20.0/24"
+                    },
+                    {
+                        "subnetName": "SensorSubnet2",
+                        "subnetAddressPrefix": "10.30.21.0/24"
+                    },
+                    {
+                        "subnetName": "SensorSubnet3",
+                        "subnetAddressPrefix": "10.30.22.0/24"
+                    }
+                ]
+            },
+            {
+                "vnetName": "ResearchVnet",
+                "vnetLocation": "West India",
+                "vnetAddressPrefix": "10.40.40.0/24",
+                "subnetSettings": [
+                    {
+                        "subnetName": "ResearchSystemSubnet",
+                        "subnetAddressPrefix": "10.40.40.0/24"
                     }
                 ]
             }
