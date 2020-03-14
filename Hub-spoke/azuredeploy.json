@@ -9,32 +9,32 @@
     },
     "variables": {
         "nsgName": "HubNsg",
-        "vnetSettings": {
+        "vnet": {
             "name": "HubVnet",
             "location": "[parameters('location')]",
-            "addressPrefixes": "192.168.0.0/20",
-            "subnetSettings": [
+            "addressPref": "192.168.0.0/20",
+            "subnet": [
                 {
                     "name": "ManagementSubnet",
-                    "addressPrefix": "192.168.1.0/24",
+                    "addressPref": "192.168.1.0/24",
                     "nsgID": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('nsgName'))]"
                 },
                 {
                     "name": "SharedSubnet",
-                    "addressPrefix": "192.168.4.0/22",
+                    "addressPref": "192.168.4.0/22",
                     "nsgID": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('nsgName'))]"
                 },
                 {
                     "name": "DMZSubnet",
-                    "addressPrefix": "192.168.0.0/25"
+                    "addressPref": "192.168.0.0/25"
                 },
                 {
                     "name": "AzureFirewallSubnet",
-                    "addressPrefix": "192.168.2.0/24"
+                    "addressPref": "192.168.2.0/24"
                 },
                 {
                     "name": "GatewaySubnet",
-                    "addressPrefix": "192.168.3.0/27"
+                    "addressPref": "192.168.3.0/27"
                 }
             ]
 
@@ -188,35 +188,29 @@
         {
             "type": "Microsoft.Network/virtualNetworks",
             "apiVersion": "2019-06-01",
-            "name": "[variables('vnetSettings').name]",
-            "location": "[variables('vnetSettings').location]",
+            "name": "[variables('vnet').name]",
+            "location": "[variables('vnet').location]",
             "dependsOn": [
                 "[resourceId('Microsoft.Network/networkSecurityGroups', variables('nsgName'))]"
             ],
             "properties": {
                 "addressSpace": {
                     "addressPrefixes": [
-                        "[variables('vnetSettings').addressPrefixes]"
+                        "[variables('vnet').addressPref]"
                     ]
                 },
                 "copy": [
                     {
                         "name": "subnets",
-                        "count": "[length(variables('vnetSettings').subnetSettings)]"
-                    }
-                ]
-                "subnets": [
-                    {
-                        "name": "ManagementSubnet",
-                        "properties": {
-                            "addressPrefix": "192.168.1.0/24",
-                            "networkSecurityGroup": {
-                                "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('nsgName'))]"
-                            },
-                            "delegations": [
-                            ],
-                            "privateEndpointNetworkPolicies": "Enabled",
-                            "privateLinkServiceNetworkPolicies": "Enabled"
+                        "count": "[length(variables('vnet').subnet)]",
+                        "input": {
+                            "name": "[variables('vnet').subnet[copyIndex('subnets')].name]",
+                            "properties": {
+                                "addressPrefix": "[variables('vnet').subnet[copyIndex('subnets')].addressPref]",
+                                "networkSecurityGroup": {
+                                    "id": "[variables('vnet').subnet[copyIndex('subnets')].nsgID]"
+                                }
+                            }
                         }
                     }
                 ],
