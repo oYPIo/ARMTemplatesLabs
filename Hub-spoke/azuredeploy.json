@@ -27,17 +27,17 @@
                 {
                     "name": "DMZSubnet",
                     "addressPref": "192.168.0.0/25",
-                    "nsgID": null
+                    "nsgID": ""
                 },
                 {
                     "name": "AzureFirewallSubnet",
                     "addressPref": "192.168.2.0/24",
-                    "nsgID": null
+                    "nsgID": ""
                 },
                 {
                     "name": "GatewaySubnet",
                     "addressPref": "192.168.3.0/27",
-                    "nsgID": null
+                    "nsgID": ""
                 }
             ]
 
