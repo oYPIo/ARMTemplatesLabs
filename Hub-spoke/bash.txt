@@ -3,7 +3,7 @@ Deployment:
 az group create \
   --name Hub-spoke_Dev \
   --location "West Europe"
-az group deployment create \
+az deployment group create \
   --name devenvironment \
   --resource-group Hub-spoke_Dev \
   --template-uri https://raw.githubusercontent.com/oYPIo/ARMTemplatesLabs/Hub-spokeDev/Hub-spoke/azuredeploy.json \
