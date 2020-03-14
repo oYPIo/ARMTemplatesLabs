@@ -36,7 +36,7 @@
                     "name": "GatewaySubnet",
                     "addressPref": "192.168.3.0/27"
                 }
-            ]
+            ]   
 
         }
     },
@@ -207,9 +207,7 @@
                             "name": "[variables('vnet').subnet[copyIndex('subnets')].name]",
                             "properties": {
                                 "addressPrefix": "[variables('vnet').subnet[copyIndex('subnets')].addressPref]",
-                                "networkSecurityGroup": {
-                                    "id": "[if(contains(variables('vnet').subnet[copyIndex('subnets')], 'nsgID'), variables('vnet').subnet[copyIndex('subnets')].nsgID, json('null'))]"
-                                }
+                                "networkSecurityGroup": "[if(contains(variables('vnet').subnet[copyIndex('subnets')], 'nsgID'), json(concat('{\"id\": \"', variables('vnet').subnet[copyIndex('subnets')].nsgID, '\"}')) , json('null'))]"
                             }
                         }
                     }
