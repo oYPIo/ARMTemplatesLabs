@@ -208,7 +208,7 @@
                             "properties": {
                                 "addressPrefix": "[variables('vnet').subnet[copyIndex('subnets')].addressPref]",
                                 "networkSecurityGroup": {
-                                    "id": "[if(contains(variables('vnet').subnet[copyIndex('subnets')], 'nsgID'), variables('vnet').subnet[copyIndex('subnets')].nsgID, 'skip')]"
+                                    "id": "[if(contains(variables('vnet').subnet[copyIndex('subnets')], 'nsgID'), variables('vnet').subnet[copyIndex('subnets')].nsgID, json('null'))]"
                                 }
                             }
                         }
