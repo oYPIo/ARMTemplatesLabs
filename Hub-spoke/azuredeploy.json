@@ -27,17 +27,17 @@
                 {
                     "name": "DMZSubnet",
                     "addressPref": "192.168.0.0/25",
-                    "nsgID": "skip"
+                    "nsgID": ""
                 },
                 {
                     "name": "AzureFirewallSubnet",
                     "addressPref": "192.168.2.0/24",
-                    "nsgID": "skip"
+                    "nsgID": ""
                 },
                 {
                     "name": "GatewaySubnet",
                     "addressPref": "192.168.3.0/27",
-                    "nsgID": "skip"
+                    "nsgID": ""
                 }
             ]
 
@@ -211,7 +211,7 @@
                             "properties": {
                                 "addressPrefix": "[variables('vnet').subnet[copyIndex('subnets')].addressPref]",
                                 "networkSecurityGroup": {
-                                    "id": "[variables('vnet').subnet[copyIndex('subnets')].nsgID]"
+                                    "id": "[not(empty(variables('vnet').subnet[copyIndex('subnets')].nsgID))]"
                                 }
                             }
                         }
