@@ -6,5 +6,5 @@ az group create \
 az group deployment create \
   --name devenvironment \
   --resource-group Hub-spoke_Dev \
-  --template-uri https://raw.githubusercontent.com/oYPIo/ARMTemplatesLabs/Hub-spoke_Dev/Hub-spoke/azuredeploy.json \
+  --template-uri https://raw.githubusercontent.com/oYPIo/ARMTemplatesLabs/Hub-spokeDev/Hub-spoke/azuredeploy.json \
   --parameters azuredeploy.parameters.dev.json
