@@ -36,7 +36,7 @@
                     "name": "GatewaySubnet",
                     "addressPref": "192.168.3.0/27"
                 }
-            ]   
+            ]
 
         }
     },
@@ -61,15 +61,7 @@
                             "destinationAddressPrefix": "VirtualNetwork",
                             "access": "Allow",
                             "priority": 65000,
-                            "direction": "Inbound",
-                            "sourcePortRanges": [
-                            ],
-                            "destinationPortRanges": [
-                            ],
-                            "sourceAddressPrefixes": [
-                            ],
-                            "destinationAddressPrefixes": [
-                            ]
+                            "direction": "Inbound"
                         }
                     },
                     {
@@ -83,15 +75,7 @@
                             "destinationAddressPrefix": "*",
                             "access": "Allow",
                             "priority": 65001,
-                            "direction": "Inbound",
-                            "sourcePortRanges": [
-                            ],
-                            "destinationPortRanges": [
-                            ],
-                            "sourceAddressPrefixes": [
-                            ],
-                            "destinationAddressPrefixes": [
-                            ]
+                            "direction": "Inbound"
                         }
                     },
                     {
@@ -105,15 +89,7 @@
                             "destinationAddressPrefix": "*",
                             "access": "Deny",
                             "priority": 65500,
-                            "direction": "Inbound",
-                            "sourcePortRanges": [
-                            ],
-                            "destinationPortRanges": [
-                            ],
-                            "sourceAddressPrefixes": [
-                            ],
-                            "destinationAddressPrefixes": [
-                            ]
+                            "direction": "Inbound"
                         }
                     },
                     {
@@ -127,15 +103,7 @@
                             "destinationAddressPrefix": "VirtualNetwork",
                             "access": "Allow",
                             "priority": 65000,
-                            "direction": "Outbound",
-                            "sourcePortRanges": [
-                            ],
-                            "destinationPortRanges": [
-                            ],
-                            "sourceAddressPrefixes": [
-                            ],
-                            "destinationAddressPrefixes": [
-                            ]
+                            "direction": "Outbound"
                         }
                     },
                     {
@@ -149,15 +117,7 @@
                             "destinationAddressPrefix": "Internet",
                             "access": "Allow",
                             "priority": 65001,
-                            "direction": "Outbound",
-                            "sourcePortRanges": [
-                            ],
-                            "destinationPortRanges": [
-                            ],
-                            "sourceAddressPrefixes": [
-                            ],
-                            "destinationAddressPrefixes": [
-                            ]
+                            "direction": "Outbound"
                         }
                     },
                     {
@@ -171,15 +131,7 @@
                             "destinationAddressPrefix": "*",
                             "access": "Deny",
                             "priority": 65500,
-                            "direction": "Outbound",
-                            "sourcePortRanges": [
-                            ],
-                            "destinationPortRanges": [
-                            ],
-                            "sourceAddressPrefixes": [
-                            ],
-                            "destinationAddressPrefixes": [
-                            ]
+                            "direction": "Outbound"
                         }
                     }
                 ]
@@ -207,7 +159,7 @@
                             "name": "[variables('vnet').subnet[copyIndex('subnets')].name]",
                             "properties": {
                                 "addressPrefix": "[variables('vnet').subnet[copyIndex('subnets')].addressPref]",
-                                "networkSecurityGroup": "[if(contains(variables('vnet').subnet[copyIndex('subnets')], 'nsgID'), json(concat('{\"id\": \"', variables('vnet').subnet[copyIndex('subnets')].nsgID, '\"}')) , json('null'))]"
+                                "networkSecurityGroup": "[if( contains(variables('vnet').subnet[copyIndex('subnets')], 'nsgID') , json(concat('{\"id\": \"', variables('vnet').subnet[copyIndex('subnets')].nsgID, '\"}')) , json('null'))]"
                             }
                         }
                     }
