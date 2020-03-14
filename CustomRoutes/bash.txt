@@ -3,7 +3,7 @@ Deployment:
 az group create \
   --name CustomRoutes_Dev \
   --location "West Europe"
-az group deployment create \
+az deployment group create \
   --name devenvironment \
   --resource-group CustomRoutes_Dev \
   --template-uri https://raw.githubusercontent.com/oYPIo/ARMTemplatesLabs/test/CustomRoutes/azuredeploy.json \
