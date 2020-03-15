@@ -241,7 +241,7 @@
                 "allowGatewayTransit": false,
                 "useRemoteGateways": false,
                 "remoteVirtualNetwork": {
-                    "id": "[reference(parameters('spokeTemplate')[copyIndex()].name).outputs.vnetID.value]"
+                    "id": "[reference(parameters('spokeTemplate')[copyIndex('peeringCopy')].name).outputs.vnetID.value]"
                 }
             }
         }
