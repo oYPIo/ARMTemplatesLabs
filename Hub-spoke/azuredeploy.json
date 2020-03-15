@@ -225,7 +225,7 @@
         {
             "apiVersion": "2019-04-01",
             "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
-            "name": "[concat(variables('vnet').name, '/To-', reference(resourceId('Microsoft.Resources/deployments/', parameters('spokeTemplate')[0].name)).outputs.vnetName.value)]",
+            "name": "HubVnet/To-HRappVnet",
             "location": "[parameters('location')]",
             "dependsOn": [
                 "[resourceId('Microsoft.Network/virtualNetworks/', variables('vnet').name)]",
