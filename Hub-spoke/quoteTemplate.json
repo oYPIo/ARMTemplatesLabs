@@ -8,33 +8,16 @@
         }
     },
     "variables": {
-        "nsgName": "HubNsg",
+        "nsgName": "QuoteNsg",
         "vnet": {
-            "name": "HubVnet",
+            "name": "QuoteVnet",
             "location": "[parameters('location')]",
-            "addressPref": "192.168.0.0/20",
+            "addressPref": "10.50.0.0/16",
             "subnet": [
                 {
-                    "name": "ManagementSubnet",
-                    "addressPref": "192.168.1.0/24",
+                    "name": "QuoteSystemsSubnet",
+                    "addressPref": "10.50.0.0/16",
                     "nsgID": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('nsgName'))]"
-                },
-                {
-                    "name": "SharedSubnet",
-                    "addressPref": "192.168.4.0/22",
-                    "nsgID": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('nsgName'))]"
-                },
-                {
-                    "name": "DMZSubnet",
-                    "addressPref": "192.168.0.0/25"
-                },
-                {
-                    "name": "AzureFirewallSubnet",
-                    "addressPref": "192.168.2.0/24"
-                },
-                {
-                    "name": "GatewaySubnet",
-                    "addressPref": "192.168.3.0/27"
                 }
             ]
 
