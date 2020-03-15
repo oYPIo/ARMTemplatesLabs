@@ -225,23 +225,19 @@
         {
             "apiVersion": "2019-04-01",
             "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
-            "name": "[concat(variables('vnet').name, '/To-', reference(parameters('spokeTemplate')[copyIndex()].name).outputs.vnetName.value)]",
+            "name": "[concat(variables('vnet').name, '/To-', reference(parameters('spokeTemplate')[0].name).outputs.vnetName.value)]",
             "location": "[parameters('location')]",
             "dependsOn": [
                 "[resourceId('Microsoft.Network/virtualNetworks/', variables('vnet').name)]",
-                "[resourceId('Microsoft.Resources/deployments/', parameters('spokeTemplate')[copyIndex()].name)]"
+                "[resourceId('Microsoft.Resources/deployments/', parameters('spokeTemplate')[0].name)]"
             ],
-            "copy": {
-                "name": "peeringCopy",
-                "count": "[length(parameters('spokeTemplate'))]"
-            },
             "properties": {
                 "allowVirtualNetworkAccess": true,
                 "allowForwardedTraffic": false,
                 "allowGatewayTransit": false,
                 "useRemoteGateways": false,
                 "remoteVirtualNetwork": {
-                    "id": "[reference(parameters('spokeTemplate')[copyIndex('peeringCopy')].name).outputs.vnetID.value]"
+                    "id": "[reference(parameters('spokeTemplate')[0].name).outputs.vnetID.value]"
                 }
             }
         }
