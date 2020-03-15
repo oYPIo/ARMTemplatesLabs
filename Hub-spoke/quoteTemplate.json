@@ -157,5 +157,15 @@
                 "enableVmProtection": false
             }
         }
-    ]
+    ],
+    "outputs":{
+        "vnetName":{
+            "type": "string",
+            "value": "[variables('vnet').name]"
+        },
+        "vnetID": {
+            "type": "string",
+            "value": "[resourceId('Microsoft.Network/virtualNetworks', variables('vnet').name)]"
+        }
+    }
 }

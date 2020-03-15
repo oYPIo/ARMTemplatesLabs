@@ -16,12 +16,23 @@
                 {
                     "name": "quoteTemplate",
                     "uri": "[uri(parameters('_artifactsLocation'), 'quoteTemplate.json')]",
-                    "parameters": {}
+                    "parameters": {
+                    },
+                    "peeringFromSpokeToHub": false
                 },
                 {
                     "name": "webTemplate",
                     "uri": "[uri(parameters('_artifactsLocation'), 'webTemplate.json')]",
-                    "parameters": {}
+                    "parameters": {
+                    },
+                    "peeringFromSpokeToHub": false
+                },
+                {
+                    "name": "hrTemplate",
+                    "uri": "[uri(parameters('_artifactsLocation'), 'hrTemplate.json')]",
+                    "parameters": {
+                    },
+                    "peeringFromSpokeToHub": true
                 }
             ]
         }
@@ -199,7 +210,7 @@
             "apiVersion": "2018-05-01",
             "dependsOn": [
             ],
-            "copy":{
+            "copy": {
                 "name": "spokeCopy",
                 "count": "[length(parameters('spokeTemplate'))]"
             },
@@ -210,6 +221,87 @@
                 },
                 "parameters": "[parameters('spokeTemplate')[copyIndex()].parameters]"
             }
+        },
+        {
+            "apiVersion": "2019-04-01",
+            "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+            "name": "[concat(variables('vnet').name, '/To-', reference(parameters('spokeTemplate')[copyIndex()].name).outputs.vnetName.value)]",
+            "location": "[parameters('location')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualNetworks/', variables('vnet').name)]",
+                "[resourceId('Microsoft.Resources/deployments/', parameters('spokeTemplate')[copyIndex()].name)]"
+            ],
+            "copy": {
+                "name": "peeringCopy",
+                "count": "[length(parameters('spokeTemplate'))]"
+            },
+            "properties": {
+                "allowVirtualNetworkAccess": true,
+                "allowForwardedTraffic": false,
+                "allowGatewayTransit": false,
+                "useRemoteGateways": false,
+                "remoteVirtualNetwork": {
+                    "id": "[resourceId('Microsoft.Network/virtualNetworks','MarketingVNet')]"
+                }
+            }
+        },
+        {
+            "apiVersion": "2017-06-01",
+            "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+            "name": "MarketingVNet/To-SalesVNet",
+            "location": "northeurope",
+            "dependsOn": [
+                "[concat('Microsoft.Network/virtualNetworks/', 'SalesVNet')]",
+                "[concat('Microsoft.Network/virtualNetworks/', 'MarketingVNet')]"
+            ],
+            "properties": {
+                "allowVirtualNetworkAccess": true,
+                "allowForwardedTraffic": false,
+                "allowGatewayTransit": false,
+                "useRemoteGateways": false,
+                "remoteVirtualNetwork": {
+                    "id": "[resourceId('Microsoft.Network/virtualNetworks','SalesVNet')]"
+                }
+            }
+        },
+        {
+            "apiVersion": "2017-06-01",
+            "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+            "name": "MarketingVNet/To-ResearchVNet",
+            "location": "northeurope",
+            "dependsOn": [
+                "[concat('Microsoft.Network/virtualNetworks/', 'ResearchVNet')]",
+                "[concat('Microsoft.Network/virtualNetworks/', 'MarketingVNet')]"
+            ],
+            "properties": {
+                "allowVirtualNetworkAccess": true,
+                "allowForwardedTraffic": false,
+                "allowGatewayTransit": false,
+                "useRemoteGateways": false,
+                "remoteVirtualNetwork": {
+                    "id": "[resourceId('Microsoft.Network/virtualNetworks','ResearchVNet')]"
+                }
+            }
+        },
+        {
+            "apiVersion": "2017-06-01",
+            "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+            "name": "ResearchVNet/To-MarketingVNet",
+            "location": "westeurope",
+            "dependsOn": [
+                "[concat('Microsoft.Network/virtualNetworks/', 'ResearchVNet')]",
+                "[concat('Microsoft.Network/virtualNetworks/', 'MarketingVNet')]"
+            ],
+            "properties": {
+                "allowVirtualNetworkAccess": true,
+                "allowForwardedTraffic": false,
+                "allowGatewayTransit": false,
+                "useRemoteGateways": false,
+                "remoteVirtualNetwork": {
+                    "id": "[resourceId('Microsoft.Network/virtualNetworks','MarketingVNet')]"
+                }
+            }
         }
+
     ]
 }
