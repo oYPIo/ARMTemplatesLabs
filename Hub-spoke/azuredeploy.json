@@ -225,7 +225,7 @@
         {
             "apiVersion": "2019-04-01",
             "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
-            "name": "[concat(variables('vnet').name, '/To-', reference(parameters('spokeTemplate')[0].name).outputs.vnetName.value)]",
+            "name": "[concat(variables('vnet').name, '/To-', reference(concat('Microsoft.Resources/deployments',parameters('spokeTemplate')[0].name)).outputs.vnetName.value)]",
             "location": "[parameters('location')]",
             "dependsOn": [
                 "[resourceId('Microsoft.Network/virtualNetworks/', variables('vnet').name)]",
