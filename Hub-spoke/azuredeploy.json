@@ -11,7 +11,7 @@
             "defaultValue": "[resourceGroup().location]"
         },
         "spokeTemplate": {
-            "type": "object",
+            "type": "array",
             "defaultValue": [
                 {
                     "name": "quoteTemplate",
