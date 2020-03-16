@@ -52,18 +52,6 @@
                     "name": "quoteTemplate",
                     "uri": "[uri(parameters('_artifactsLocation'), 'quoteTemplate.json')]",
                     "parameters": {
-                        "nsgName": "QuoteNsg",
-                        "vnet": {
-                            "name": "QuoteVnet",
-                            "addressPref": "10.50.0.0/16",
-                            "subnet": [
-                                {
-                                    "name": "QuoteSystemsSubnet",
-                                    "addressPref": "10.50.0.0/16",
-                                    "nsgID": "[resourceId('Microsoft.Network/networkSecurityGroups', 'QuoteNsg')]"
-                                }
-                            ]
-                        }
                     },
                     "peeringFromSpokeToHub": false
                 },
@@ -71,19 +59,6 @@
                     "name": "webTemplate",
                     "uri": "[uri(parameters('_artifactsLocation'), 'webTemplate.json')]",
                     "parameters": {
-                        "nsgName": "WebNsg",
-                        "vnet": {
-                            "name": "WebVnet",
-                            "addressPref": "10.100.0.0/16",
-                            "subnet": [
-                                {
-                                    "name": "WebSystemsSubnet",
-                                    "addressPref": "10.100.0.0/16",
-                                    "nsgID": "[resourceId('Microsoft.Network/networkSecurityGroups', 'WebVnet')]"
-                                }
-                            ]
-                        }
-
                     },
                     "peeringFromSpokeToHub": false
                 },
@@ -91,19 +66,6 @@
                     "name": "hrTemplate",
                     "uri": "[uri(parameters('_artifactsLocation'), 'hrTemplate.json')]",
                     "parameters": {
-                        "nsgName": "HRappNsg",
-                        "vnet": {
-                            "name": "HRappVnet",
-                            "addressPref": "10.10.0.0/16",
-                            "subnet": [
-                                {
-                                    "name": "HRsystems",
-                                    "addressPref": "10.10.1.0/24",
-                                    "nsgID": "[resourceId('Microsoft.Network/networkSecurityGroups', 'HRappVnet')]"
-                                }
-                            ]
-                        }
-
                     },
                     "peeringFromSpokeToHub": true
                 }
