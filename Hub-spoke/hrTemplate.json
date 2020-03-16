@@ -36,24 +36,11 @@
             "properties": {
                 "securityRules": [
                       {
-                        "name": "Block-Inbound-HTTP-HTTPS-80",
+                        "name": "Block-Inbound-HTTP-HTTPS",
                         "properties": {
                             "protocol": "*",
                             "sourcePortRange": "*",
-                            "destinationPortRange": "80",
-                            "sourceAddressPrefix": "*",
-                            "destinationAddressPrefix": "VirtualNetwork",
-                            "access": "Deny",
-                            "priority": 100,
-                            "direction": "Inbound"
-                        }
-                    },
-                    {
-                        "name": "Block-Inbound-HTTP-HTTPS-443",
-                        "properties": {
-                            "protocol": "*",
-                            "sourcePortRange": "*",
-                            "destinationPortRange": "443",
+                            "destinationPortRanges": ["80","443"],
                             "sourceAddressPrefix": "*",
                             "destinationAddressPrefix": "VirtualNetwork",
                             "access": "Deny",
