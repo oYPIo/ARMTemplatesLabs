@@ -13,16 +13,15 @@
         "vnet": {
             "type": "object",
             "defaultValue": {
-            "name": "HRappVnet",
-            "location": "[parameters('location')]",
-            "addressPref": "10.10.0.0/16",
-            "subnet": [
-                {
-                    "name": "HRsystems",
-                    "addressPref": "10.10.1.0/24",
-                    "nsgID": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('nsgName'))]"
-                }
-            ]
+                "name": "HRappVnet",
+                "addressPref": "10.10.0.0/16",
+                "subnet": [
+                    {
+                        "name": "HRsystems",
+                        "addressPref": "10.10.1.0/24",
+                        "nsgID": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('nsgName'))]"
+                    }
+                ]
             }
         }
     },
@@ -129,7 +128,7 @@
             "type": "Microsoft.Network/virtualNetworks",
             "apiVersion": "2019-06-01",
             "name": "[parameters('vnet').name]",
-            "location": "[parameters('vnet').location]",
+            "location": "[parameters('location')]",
             "dependsOn": [
                 "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('nsgName'))]"
             ],
@@ -163,8 +162,8 @@
             }
         }
     ],
-    "outputs":{
-        "vnetName":{
+    "outputs": {
+        "vnetName": {
             "type": "string",
             "value": "[parameters('vnet').name]"
         },
