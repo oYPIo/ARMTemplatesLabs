@@ -86,7 +86,7 @@
                                     {
                                         "name": "WebSystemsSubnet",
                                         "addressPref": "10.100.0.0/16",
-                                        "nsgID": "[resourceId('Microsoft.Network/networkSecurityGroups', 'WebVnet')]"
+                                        "nsgID": "[resourceId('Microsoft.Network/networkSecurityGroups', 'WebNsg')]"
                                     }
                                 ]
                             }
@@ -109,12 +109,11 @@
                                     {
                                         "name": "HRsystems",
                                         "addressPref": "10.10.1.0/24",
-                                        "nsgID": "[resourceId('Microsoft.Network/networkSecurityGroups', 'HRappVnet')]"
+                                        "nsgID": "[resourceId('Microsoft.Network/networkSecurityGroups', 'HRappNsg')]"
                                     }
                                 ]
                             }
                         }
-
                     },
                     "peeringFromSpokeToHub": true
                 }
