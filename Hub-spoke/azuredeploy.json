@@ -296,30 +296,6 @@
                     "id": "[reference(resourceId('Microsoft.Resources/deployments/', parameters('spokeTemplate')[copyIndex()].name)).outputs.vnetID.value]"
                 }
             }
-        },
-        {
-            "condition" : "[parameters('spokeTemplate')[copyIndex()].peeringFromSpokeToHub]",
-            "apiVersion": "2019-04-01",
-            "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
-            "name": "[concat(parameters('spokeTemplate')[copyIndex()].parameters.vnet.value.name, '/To-', parameters('vnet').name)]",
-            "location": "[parameters('location')]",
-            "dependsOn": [
-                "[resourceId('Microsoft.Network/virtualNetworks/', parameters('vnet').name)]",
-                "[resourceId('Microsoft.Resources/deployments/', parameters('spokeTemplate')[copyIndex()].name)]"
-            ],
-            "copy": {
-                "name": "peeringFromSpokeCopy",
-                "count": "[parameters('spokeTemplate')]"
-            },
-            "properties": {
-                "allowVirtualNetworkAccess": true,
-                "allowForwardedTraffic": false,
-                "allowGatewayTransit": false,
-                "useRemoteGateways": false,
-                "remoteVirtualNetwork": {
-                    "id": "[resourceId('Microsoft.Network/virtualNetworks/', parameters('vnet').name)]"
-                }
-            }
         }
     ],
     "outputs": {
