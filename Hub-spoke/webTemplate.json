@@ -14,7 +14,6 @@
             "type": "object",
             "defaultValue": {
                 "name": "WebVnet",
-                "location": "[parameters('location')]",
                 "addressPref": "10.100.0.0/16",
                 "subnet": [
                     {
@@ -129,7 +128,7 @@
             "type": "Microsoft.Network/virtualNetworks",
             "apiVersion": "2019-06-01",
             "name": "[parameters('vnet').name]",
-            "location": "[parameters('vnet').location]",
+            "location": "[parameters('location')]",
             "dependsOn": [
                 "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('nsgName'))]"
             ],
