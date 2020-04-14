@@ -18,7 +18,7 @@
             "value": "MyLinuxAgent"
         },
         "ubuntuOSVersion": {
-            "value": "16.04-LTS"
+            "value": "16.04.0-LTS"
         },
         "VmSize": {
             "value": "Standard_B1s"
