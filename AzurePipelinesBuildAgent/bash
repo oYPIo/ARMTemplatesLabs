@@ -1,0 +1,9 @@
+az group create \
+    --name buildAgent_Dev \
+    --location "West Europe"
+
+az group deployment create \
+  --name devenvironment \
+  --resource-group buildAgent_Dev \
+  --template-uri https://raw.githubusercontent.com/oYPIo/ARMTemplatesLabs/test/AppGateway/azuredeploy.json \
+  --parameters azuredeploy.parameters.dev.json

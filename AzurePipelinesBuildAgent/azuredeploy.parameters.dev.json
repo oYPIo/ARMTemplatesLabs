@@ -1,0 +1,27 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "adminUsername": {
+            "value": "YPI"
+        },
+        "authenticationType": {
+            "value": "sshPublicKey"
+        },
+        "adminPasswordOrKey": {
+            "value": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDaH0aagus4FsUx+DgbBVZOrANvRZgX4dA6CdCVfeuXXDvcBB/hAa+UWO23S3IqaVf3ws/AaGNYbxlJaqCgV3s086W/QTsHtaczOIn11rw2gFCmkB81YL2+g9c9nUQfBXeZeykkD/60tUjnA69lKrOGAPgq7Me93KB5a/2UQvrU6DPwaVscH6yKbTHL2a9Q2sCop+NaYoI/yxCS0Zrv1O/RcvFayuJ72FFr9vkwM0hJmdmPXI3CSE26ROBeRxb3BDJpMNf9N2DNnKZbxIM92KQMmGAd7lz3ER0TZI4u0EGHebhCoqTBETk6vNzqlKAp3BtXB+2fX0VmGPJ8eYZ9px91 yaroslav@cc-585d68fc-84b964784-hw927"
+        },
+        "dnsLabelPrefix": {
+            "value": "gabagabagaba"
+        },
+        "vmName": {
+            "value": "MyLinuxAgent"
+        },
+        "ubuntuOSVersion": {
+            "value": "16.04-LTS"
+        },
+        "VmSize": {
+            "value": "Standard_B1s"
+        }
+    }
+}
