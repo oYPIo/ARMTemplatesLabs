@@ -110,7 +110,7 @@
                 ]
             }
         },
-        "customData": "[concat('#include\n', uri(parameters('_artifactsLocation'), 'cloud-init.txt'))]"
+        "customData": "[concat('#include\n', uri(parameters('_artifactsLocation'), 'script.sh'))]"
     },
     "resources": [
         {
