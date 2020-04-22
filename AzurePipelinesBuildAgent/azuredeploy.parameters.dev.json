@@ -9,10 +9,10 @@
             "value": "sshPublicKey"
         },
         "adminPasswordOrKey": {
-            "value": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDaH0aagus4FsUx+DgbBVZOrANvRZgX4dA6CdCVfeuXXDvcBB/hAa+UWO23S3IqaVf3ws/AaGNYbxlJaqCgV3s086W/QTsHtaczOIn11rw2gFCmkB81YL2+g9c9nUQfBXeZeykkD/60tUjnA69lKrOGAPgq7Me93KB5a/2UQvrU6DPwaVscH6yKbTHL2a9Q2sCop+NaYoI/yxCS0Zrv1O/RcvFayuJ72FFr9vkwM0hJmdmPXI3CSE26ROBeRxb3BDJpMNf9N2DNnKZbxIM92KQMmGAd7lz3ER0TZI4u0EGHebhCoqTBETk6vNzqlKAp3BtXB+2fX0VmGPJ8eYZ9px91 yaroslav@cc-585d68fc-84b964784-hw927"
+            "value": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDr70v9t2wtvVPSpnjghi6QWC7MckPc1Ag0AX0S5DnPUId8SKGHoSEL0QLEA/NqIvyeFgGzhy4oAESjpiMX0ZFOrKG1fsIGOE7mITZf2GtJVuJbQ8a2I3CJj6g4uFmr9EB2T8TpVz3/vlvH9xf+e4bLrw5A88UiPOSTOy3VUJ2kLl1/mN7Z9pnLQFb82WQvgbruW/o8DNzggdk05MxmVVUDLFtzeYMfQLLAaUwa4mrfXz+6TwUrfFdLBG5wPaojEb4nn5PtK5PT7oIBui6jGlg9OfDAe1jrSyM3z8aI1l7MHioc3uNhPo68sd4N7kdHwg8D1lWvV7kdRYw28lxjPFd7 yaroslav@cc-39c03a45-7664c96f56-zdgzk"
         },
         "dnsLabelPrefix": {
-            "value": "gabagabagaba"
+            "value": "gaBagabagaba"
         },
         "vmName": {
             "value": "MyLinuxAgent"
@@ -22,6 +22,9 @@
         },
         "VmSize": {
             "value": "Standard_DS2_v2"
+        },
+        "CustomScriptFile": {
+            "value": "script.sh"
         }
     }
 }
