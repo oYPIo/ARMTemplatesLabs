@@ -72,10 +72,10 @@
         },
         "CustomScriptFile": {
             "type": "string",
+            "defaultValue": "",
             "metadata": {
                 "description": "path to a configuration script file"
-            },
-            "defaultValue": ""
+            }
         },
         "virtualNetworkName": {
             "type": "string",
