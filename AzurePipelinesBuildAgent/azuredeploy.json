@@ -117,7 +117,7 @@
                 ]
             }
         },
-        "customData": "[if(empty(parameters('CustomScriptFile')), '', concat('#include\n', uri(parameters('_artifactsLocation'), 'script.sh')))]"
+        "customData": "[if(empty(parameters('CustomScriptFile')), '', concat('#include\n', uri(parameters('_artifactsLocation'), parameters('CustomScriptFile'))))]"
     },
     "resources": [
         {
