@@ -74,7 +74,8 @@
             "type": "string",
             "metadata": {
                 "description": "path to a configuration script file"
-            }
+            },
+            "defaultValue": ""
         },
         "virtualNetworkName": {
             "type": "string",
