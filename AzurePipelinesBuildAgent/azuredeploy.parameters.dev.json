@@ -21,7 +21,10 @@
             "value": "16.04.0-LTS"
         },
         "VmSize": {
-            "value": "Standard_B1s"
+            "value": "Standard_DS2_v2"
+        },
+        "CustomScriptFile": {
+            "value": ""
         }
     }
 }

@@ -70,6 +70,12 @@
                 "description": "The size of the VM"
             }
         },
+        "CustomScriptFile": {
+            "type": "string",
+            "metadata": {
+                "description": "path to a configuration script file"
+            }
+        },
         "virtualNetworkName": {
             "type": "string",
             "defaultValue": "vNet",
@@ -110,7 +116,7 @@
                 ]
             }
         },
-        "customData": "[concat('#include\n', uri(parameters('_artifactsLocation'), 'script.sh'))]"
+        "customData": "[if(empty(parameters('CustomScriptFile')), '', concat('#include\n', uri(parameters('_artifactsLocation'), parameters('CustomScriptFile'))))]"
     },
     "resources": [
         {
