@@ -2,7 +2,7 @@
 
 runcmd:
   - sudo apt-get update
-  - sudo apt install jq
+  - sudo apt -y install jq
   - curl https://raw.githubusercontent.com/oYPIo/ARMTemplatesLabs/dev/buildAgent/AzurePipelinesBuildAgent/agentParameters.sh > agentParameters.sh
   - chmod u+x agentParameters.sh
   - source agentParameters.sh
