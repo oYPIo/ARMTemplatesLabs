@@ -70,6 +70,12 @@
                 "description": "The size of the VM"
             }
         },
+        "EnvironmentVariablesFile": {
+            "type": "string",
+            "metadata": {
+                "description": "e.v. for vm shell"
+            }
+        },
         "CustomScriptFile": {
             "type": "string",
             "defaultValue": "",
@@ -117,7 +123,7 @@
                 ]
             }
         },
-        "customData": "[if(empty(parameters('CustomScriptFile')), '', concat('#include\n', uri(parameters('_artifactsLocation'), parameters('CustomScriptFile'))))]"
+        "customData": "[if( or(empty(parameters('CustomScriptFile')), empty(parameters('EnvironmentVariablesFile'))), '', concat('#include\n', 'type ', uri(parameters('_artifactsLocation'), parameters('EnvironmentVariablesFile')), ' >> ~/.bashrc ', '\n',  uri(parameters('_artifactsLocation'), parameters('CustomScriptFile'))))]"
     },
     "resources": [
         {
