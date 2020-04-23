@@ -16,4 +16,4 @@ export AZP_POOL=MyAgentPool
 export AZP_AGENT_VERSION=$(curl -s https://api.github.com/repos/microsoft/azure-pipelines-agent/releases | jq -r '.[0].tag_name' | cut -d "v" -f 2)
 
 chmod u+x build-agent.sh
-source -E ./build-agent.sh
+source ./build-agent.sh
