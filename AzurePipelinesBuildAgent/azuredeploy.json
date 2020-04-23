@@ -71,10 +71,7 @@
             }
         },
         "CustomData": {
-            "type": "string",
-            "metadata": {
-                "description": "path to a cloud-init file"
-            }
+            "type": "string"
         },
         "virtualNetworkName": {
             "type": "string",

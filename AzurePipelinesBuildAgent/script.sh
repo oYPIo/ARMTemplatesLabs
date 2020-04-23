@@ -6,11 +6,11 @@ curl https://raw.githubusercontent.com/MicrosoftDocs/mslearn-azure-pipelines-bui
 chmod u+x build-tools.sh
 sudo ./build-tools.sh
 
-export AZP_AGENT_NAME=MyLinuxAgent
-export AZP_URL=https://dev.azure.com/Tailspin051
-export AZP_TOKEN=5ebqt52cmadi7f2puab2ha2sov5tp5u3ddnlch2npgtipn6o4zrq
-export AZP_POOL=MyAgentPool
-export AZP_AGENT_VERSION=$(curl -s https://api.github.com/repos/microsoft/azure-pipelines-agent/releases | jq -r '.[0].tag_name' | cut -d "v" -f 2)
+
+#install parameters for agent software
+curl https://raw.githubusercontent.com/oYPIo/ARMTemplatesLabs/dev/buildAgent/AzurePipelinesBuildAgent/agentParameters.sh > agentParameters.sh
+chmod u+x agentParameters.sh
+. ./agentParameters.sh
 
 #install agent software
 curl https://raw.githubusercontent.com/MicrosoftDocs/mslearn-azure-pipelines-build-agent/master/build-agent.sh > build-agent.sh

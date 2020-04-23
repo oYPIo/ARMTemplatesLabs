@@ -24,7 +24,7 @@
             "value": "Standard_DS2_v2"
         },
         "CustomData": {
-            "value": "cloud-init.txt"
+            "value": "script.sh"
         }
     }
 }
