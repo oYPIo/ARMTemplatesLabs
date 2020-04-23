@@ -5,6 +5,6 @@ az group create \
 az deployment group create \
   --name devenvironment \
   --resource-group buildAgent_Dev \
-  --template-uri https://raw.githubusercontent.com/oYPIo/ARMTemplatesLabs/dev/buildAgent/AzurePipelinesBuildAgent/azuredeploy.json \
+  --template-uri https://raw.githubusercontent.com/oYPIo/ARMTemplatesLabs/master/AzurePipelinesBuildAgent/azuredeploy.json \
   --parameters azuredeploy.parameters.dev.json
 

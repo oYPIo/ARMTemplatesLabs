@@ -12,7 +12,7 @@
             "value": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDr70v9t2wtvVPSpnjghi6QWC7MckPc1Ag0AX0S5DnPUId8SKGHoSEL0QLEA/NqIvyeFgGzhy4oAESjpiMX0ZFOrKG1fsIGOE7mITZf2GtJVuJbQ8a2I3CJj6g4uFmr9EB2T8TpVz3/vlvH9xf+e4bLrw5A88UiPOSTOy3VUJ2kLl1/mN7Z9pnLQFb82WQvgbruW/o8DNzggdk05MxmVVUDLFtzeYMfQLLAaUwa4mrfXz+6TwUrfFdLBG5wPaojEb4nn5PtK5PT7oIBui6jGlg9OfDAe1jrSyM3z8aI1l7MHioc3uNhPo68sd4N7kdHwg8D1lWvV7kdRYw28lxjPFd7 yaroslav@cc-39c03a45-7664c96f56-zdgzk"
         },
         "dnsLabelPrefix": {
-            "value": "gabbagabagaba"
+            "value": "gabagabagaba"
         },
         "vmName": {
             "value": "MyLinuxAgent"
