@@ -1,4 +1,5 @@
 #!/bin/bash
+cd ~
 sudo apt-get update
 
 #install build tools (.NET, Node.js, npm, gulp)
