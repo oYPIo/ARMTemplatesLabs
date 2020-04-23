@@ -70,17 +70,10 @@
                 "description": "The size of the VM"
             }
         },
-        "EnvironmentVariablesFile": {
+        "CustomData": {
             "type": "string",
             "metadata": {
-                "description": "e.v. for vm shell"
-            }
-        },
-        "CustomScriptFile": {
-            "type": "string",
-            "defaultValue": "",
-            "metadata": {
-                "description": "path to a configuration script file"
+                "description": "path to a cloud-init file"
             }
         },
         "virtualNetworkName": {
@@ -123,7 +116,7 @@
                 ]
             }
         },
-        "customData": "[if( empty(parameters('CustomScriptFile')), '', concat('#include\n',  uri(parameters('_artifactsLocation'), parameters('CustomScriptFile'))))]"
+        "customData": "[ concat('#include\n', uri(parameters('_artifactsLocation'), parameters('CustomData')))]"
     },
     "resources": [
         {

@@ -23,11 +23,8 @@
         "VmSize": {
             "value": "Standard_DS2_v2"
         },
-        "EnvironmentVariablesFile": {
-            "value": "agentParameters.txt"
-        },
-        "CustomScriptFile": {
-            "value": "script.sh"
+        "CustomData": {
+            "value": "cloud-init.txt"
         }
     }
 }
