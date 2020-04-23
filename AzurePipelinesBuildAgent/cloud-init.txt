@@ -1,10 +1,12 @@
 #cloud-config
 
 runcmd:
-  - curl https://github.com/oYPIo/ARMTemplatesLabs/blob/dev/buildAgent/AzurePipelinesBuildAgent/agentParameters.sh > agentParameters.sh
+  - sudo apt-get update
+  - sudo apt install jq
+  - curl https://raw.githubusercontent.com/oYPIo/ARMTemplatesLabs/dev/buildAgent/AzurePipelinesBuildAgent/agentParameters.sh > agentParameters.sh
   - chmod u+x agentParameters.sh
   - source agentParameters.sh
-  - curl https://github.com/oYPIo/ARMTemplatesLabs/blob/dev/buildAgent/AzurePipelinesBuildAgent/script.sh > script.sh
+  - curl https://raw.githubusercontent.com/oYPIo/ARMTemplatesLabs/dev/buildAgent/AzurePipelinesBuildAgent/script.sh > script.sh
   - chmod u+x script.sh
   - source script.sh
   
